@@ -3,56 +3,6 @@ from odoo import api, fields, models, _      # type: ignore
 from odoo.exceptions import ValidationError  # type: ignore
 
 
-#TODO:
-#- Documenter les modifications éffectuées (points ci-dessous)
-#- Facturation à faire fonctionner
-#- Revoir les domain mis en commentaire dans les models
-#- Revoir le champ active_id / context dans les vues XML
-#- Rapport PDF
-#- Mise en ligne sur Github
-#- Migrer les données
-#- Mettre un fond gris clair sur les champs et gris clair foncé sur les champs obligaoire
-
-
-#def create
-# 2025-03-17 13:47:38,304 1725 WARNING opta-s18 py.warnings: /opt/odoo18/odoo/api.py:466: DeprecationWarning: 
-# The model odoo.addons.is_opta_s18.models.is_frais is not overriding the create method in batch
-
-
-# Since 17.0, the "attrs" and "states" attributes are no longer used.
-# 2/ seems like attrs are also not in use anymore in v17, you need to separate them into separate parameters in the object definition, so for example it will be
-# xml code:
-# < field name="name"
-#        invisible="state not in ['done', 'cancel']" 
-#        readonly="state in ['ready', 'waiting']"/> 
-
-# attrs à remplacer par : 
-# - invisible="is_type_intervenant != 'consultant'"
-# - required="is_type_intervenant == 'consultant'"
-
-
-# ValidationError => 
-
-
-
-# 2025-03-17 13:49:53,533 1770 WARNING opta-s18 odoo.addons.base.models.decimal_precision: 
-# Deprecated call to decimal_precision.get_precision(<application>), use digits=<application> instead 
-# digits=(16, 4),
-#, digits='Product Price',
-
-
-
-
-
-
-#XML:
-#- tree => list
-#- suppression des attrbiuts attrs et states => invisible
-#- context="{'default_activite_id': active_id}"  => A revoir
-#- <graph type="bar" orientation="vertical" stacked="False"> => remove orientation => <graph type="bar" stacked="False">
-# -  <div class="oe_chatter"> =>  <chatter open_attachments="True"/>
-
-
 
 class IsTypeIntervention(models.Model):
     _name = 'is.type.intervention'
