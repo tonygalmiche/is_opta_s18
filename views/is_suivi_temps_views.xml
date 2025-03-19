@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <!--is.suivi.temps.simplifie.wizard-->
+    <record id="is_suivi_temps_simplifie_wizard_form" model="ir.ui.view">
+        <field name="name">is_suivi_temps_simplifie_wizard_form</field>
+        <field name="model">is.suivi.temps.simplifie.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Interface simplifiée de suivi du temps">
+                <sheet>
+                    <group>
+                        <field name="intervenant_id"/>
+                        <field name="date_semaine"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button string='Interface simplifiée de suivi du temps' name="interface_simplifiee" type="object" class="oe_highlight"/>
+                    <button string="Annuler" class="oe_link" special="cancel"/>
+                </footer>
+           </form>
+        </field>
+    </record>
+    <record id="is_suivi_temps_simplifie_wizard_action" model="ir.actions.act_window">
+        <field name="name">Interface simplifiée de suivi du temps</field>
+        <field name="res_model">is.suivi.temps.simplifie.wizard</field>
+        <field name="view_mode">list,form</field>
+       <field name="view_id" ref="is_suivi_temps_simplifie_wizard_form"/>
+       <field name="target">new</field>
+    </record>
+
+
+    <!-- is.suivi.temps -->
+    <record id="is_suivi_temps_form" model="ir.ui.view">
+        <field name="name">is.suivi.temps.form</field>
+        <field name="model">is.suivi.temps</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="activite_id"/>
+                            <field name="affaire_id"/>
+                            <field name="type_activite"/>
+                            <field name="date_activite"/>
+                            <field name="nb_stagiaires"/>
+                            <field name="nb_heures"            widget="float_time"/>
+                            <field name="realise_st"/>
+                            <field name="a_distance"/>
+                        </group>
+                        <group>
+                            <field name="aller_heure_depart"   widget="float_time"/>
+                            <field name="aller_heure_arrivee"  widget="float_time"/>
+                            <field name="retour_heure_depart"  widget="float_time"/>
+                            <field name="retour_heure_arrivee" widget="float_time"/>
+                            <field name="temps_deplacement"    widget="float_time"/>
+                         </group>
+                    </group>
+                    <group>
+                        <field name="detail_activite"/>
+                    </group>
+                 </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="is_suivi_temps_search" model="ir.ui.view">
+        <field name="name">is.suivi.temps.search</field>
+        <field name="model">is.suivi.temps</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="affaire_id"/>
+                <field name="activite_id"/>
+                <field name="intervenant_product_id"/>
+                <field name="type_activite"/>
+                <field name="date_activite"/>
+                <field name="realise_st"/>
+                <field name="a_distance"/>
+                <field name="detail_activite"/>
+           </search>
+        </field>
+    </record>
+
+
+
+    <record id="is_suivi_temps_pivot" model="ir.ui.view">
+        <field name="name">is_suivi_temps_pivot</field>
+        <field name="model">is.suivi.temps</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="intervenant_product_id"    type="row"/>
+                <field name="nb_heures"         type="measure"/>
+                <field name="temps_deplacement" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="is_suivi_temps_graph" model="ir.ui.view">
+        <field name="name">is_suivi_temps_graph</field>
+        <field name="model">is.suivi.temps</field>
+        <field name="arch" type="xml">
+            <graph type="bar" stacked="False">
+                <field name="intervenant_product_id"       type="row"/>
+                <field name="nb_heures" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="is_suivi_temps_tree" model="ir.ui.view">
+        <field name="name">is.suivi.temps.tree</field>
+        <field name="model">is.suivi.temps</field>
+        <field name="arch" type="xml">
+            <list editable="top">
+                <field name="activite_id"/>
+                <field name="intervenant_product_id"/>
+                <field name="type_activite"/>
+                <field name="date_activite"/>
+                <field name="nb_stagiaires"                            sum="Total"/>
+                <field name="nb_heures"            widget="float_time" sum="Total"/>
+                <field name="realise_st"/>
+                <field name="a_distance"/>
+                <field name="aller_heure_depart"   widget="float_time"/>
+                <field name="aller_heure_arrivee"  widget="float_time"/>
+                <field name="retour_heure_depart"  widget="float_time"/>
+                <field name="retour_heure_arrivee" widget="float_time"/>
+                <field name="temps_deplacement"    widget="float_time" sum="Total"/>
+                <field name="detail_activite"/>
+            </list>
+        </field>
+    </record>
+    <record  id="is_suivi_temps_action" model="ir.actions.act_window">
+        <field name="name">Suivi du temps</field>
+        <field name="res_model">is.suivi.temps</field>
+        <field name="limit">200</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="view_id" ref="is_suivi_temps_tree"/>
+    </record>
+
+
+    <record id="is_suivi_temps_formation_tree" model="ir.ui.view">
+        <field name="name">is.suivi.temps.tree</field>
+        <field name="model">is.suivi.temps</field>
+        <field name="arch" type="xml">
+            <list editable="top">
+                <field name="type_activite" readonly="1"/>
+                <field name="activite_id"/>
+                <field name="affaire_id"/>
+                <field name="intervenant_product_id"/>
+                <field name="date_activite"/>
+                <field name="nb_stagiaires" sum="Total"/>
+                <field name="nb_heures"    sum="Total" widget="float_time"/>
+                <field name="total_heures" sum="Total" widget="float_time"/>
+                <field name="realise_st"/>
+                <field name="aller_heure_depart"   widget="float_time"/>
+                <field name="aller_heure_arrivee"  widget="float_time"/>
+                <field name="retour_heure_depart"  widget="float_time"/>
+                <field name="retour_heure_arrivee" widget="float_time"/>
+                <field name="temps_deplacement"    widget="float_time" sum="Total"/>
+                <field name="total_facturable_ligne1" sum="Total" readonly="1"/>
+            </list>
+        </field>
+    </record>
+    <record  id="is_suivi_temps_formation_action" model="ir.actions.act_window">
+        <field name="name">Suivi du temps formation</field>
+        <field name="res_model">is.suivi.temps</field>
+        <field name="limit">200</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="view_id" ref="is_suivi_temps_formation_tree"/>
+        <field name="context">{'default_type_activite': 'formation' }</field>
+        <field name="domain">[('type_activite','=','formation')]</field>
+    </record>
+
+
+    <record id="is_suivi_temps_back_office_tree" model="ir.ui.view">
+        <field name="name">is.suivi.temps.tree</field>
+        <field name="model">is.suivi.temps</field>
+        <field name="arch" type="xml">
+            <list editable="top">
+                <field name="type_activite" readonly="1"/>
+                <field name="activite_id"/>
+                <field name="intervenant_product_id"/>
+                <field name="date_activite"/>
+                <field name="nb_heures"            widget="float_time" sum="Total"/>
+                <field name="aller_heure_depart"   widget="float_time"/>
+                <field name="aller_heure_arrivee"  widget="float_time"/>
+                <field name="retour_heure_depart"  widget="float_time"/>
+                <field name="retour_heure_arrivee" widget="float_time"/>
+                <field name="temps_deplacement"    widget="float_time" sum="Total"/>
+                <field name="detail_activite" required="1"/>
+            </list>
+        </field>
+    </record>
+    <record  id="is_suivi_temps_back_office_action" model="ir.actions.act_window">
+        <field name="name">Suivi temps back-office</field>
+        <field name="res_model">is.suivi.temps</field>
+        <field name="limit">200</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="view_id" ref="is_suivi_temps_back_office_tree"/>
+        <field name="context">{'default_type_activite': 'back-office' }</field>
+        <field name="domain">[('type_activite','=','back-office')]</field>
+    </record>
+
+
+    <record id="is_suivi_temps_simplifie_tree" model="ir.ui.view">
+        <field name="name">is_suivi_temps_simplifie_tree</field>
+        <field name="model">is.suivi.temps</field>
+        <field name="arch" type="xml">
+            <list editable="top">
+                <field name="affaire_id"    readonly="1"/>
+                <field name="activite_id"   readonly="1"/>
+                <field name="type_activite"/>
+                <field name="date_activite" readonly="1" string="Lundi de la semaine"/>
+                <field name="nb_heures"         widget="float_time" sum="Total" string="Temps passé dans la semaine"/>
+                <field name="detail_activite"/>
+            </list>
+        </field>
+    </record>
+
+</odoo>

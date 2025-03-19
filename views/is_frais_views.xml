@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- is.frais -->
+    <record id="is_frais_seq" model="ir.sequence">
+        <field name="name">Chrono Frais</field>
+        <field name="code">is.frais</field>
+        <field name="prefix"></field>
+        <field name="padding">5</field>
+        <field eval="False" name="company_id"/>
+    </record>
+    <record id="is_frais_form" model="ir.ui.view">
+        <field name="name">is.frais.form</field>
+        <field name="model">is.frais</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button
+                        name="vers_diffuse"
+                        type="object"
+                        string="vers Diffusé"
+                        class="oe_highlight"
+                        invisible="state != 'brouillon'"
+                    />
+                    <button
+                        name="vers_valide"
+                        type="object"
+                        string="vers Validé"
+                        class="oe_highlight"
+                        invisible="state != 'diffuse'"
+                    />
+                    <button
+                        name="vers_brouillon"
+                        type="object"
+                        string="vers Brouillon"
+                        invisible="state != 'diffuse'"
+                    />
+                    <button 
+                        name="vers_diffuse" 
+                        type="object"
+                        string="vers Diffusé"
+                        invisible="state != 'valide'"
+                    />
+                    <field 
+                        name="state" 
+                        widget="statusbar"
+                        clickable="True"
+                    />
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="chrono_long"/>
+                            <field name="affaire_id"/>
+                            <field name="activite_id" domain="[('affaire_id','=',affaire_id)]" default_focus="1"/>
+                            <field name="type_activite"/>
+                            <field name="frais_forfait"/>
+                            <field name="nb_jours"        invisible="frais_forfait != True"/>
+                            <field name="forfait_jour_id" invisible="frais_forfait != True" domain="[('affaire_id','=',affaire_id)]"/>
+                            <field name="montant_forfait" invisible="frais_forfait != True"/>
+                            <field name="parcours"/>
+                            <field name="dates"/>
+                        </group>
+                        <group>
+                            <field name="createur_id"/>
+                            <field name="date_creation"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="ligne_ids" nolabel="1">
+                            <list editable="bottom">
+                                <button string="Copie" name="copie_frais_action" type="object" icon="fa-files-o"/>
+                                <field name="partner_id"/>
+                                <field name="product_id"/>
+                                <field name="effectuee_par_id"/>
+                                <field name="montant_ttc"/>
+                                <field name="montant_tva"/>
+                                <field name="refacturable"/>
+                                <field name="commentaire"/>
+                                <field name="justificatif_joint"/>
+                            </list>
+                        </field>
+                    </group>
+                    <group>
+                        <field name="justificatif_ids" widget="many2many_binary"/>
+                    </group>
+                    <group>
+                        <field name="total_consultant"/>
+                        <field name="total_refacturable"/>
+                        <field name="total_frais"/>
+                        <field name="total_tva_recuperable"/>
+                    </group>
+                </sheet>
+                 <chatter open_attachments="True"/>
+            </form>
+        </field>
+    </record>
+    <record id="is_frais_tree" model="ir.ui.view">
+        <field name="name">is.frais.tree</field>
+        <field name="model">is.frais</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="chrono_long"/>
+                <field name="date_creation"/>
+                <field name="createur_id"/>
+                <field name="activite_id"/>
+                <field name="affaire_id"/>
+                <field name="type_activite"/>
+                <field name="nb_jours"              sum="Total"/>
+                <field name="montant_forfait"/>
+                <field name="parcours"/>
+                <field name="dates"/>
+                <field name="total_consultant"      sum="Total"/>
+                <field name="total_refacturable"    sum="Total"/>
+                <field name="total_frais"           sum="Total"/>
+                <field name="total_tva_recuperable" sum="Total"/>
+                <field name="state"/>
+                <field name="is_dynacase_ids" widget="many2many_tags" groups="base.group_system"/>
+            </list>
+        </field>
+    </record>
+    <record id="is_frais_pivot" model="ir.ui.view">
+        <field name="name">is_frais_pivot</field>
+        <field name="model">is.frais</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="date_creation"       type="row"/>
+                <field name="createur_id"         type="column"/>
+                <field name="total_frais"         type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="is_frais_graph" model="ir.ui.view">
+        <field name="name">is_frais_graph</field>
+        <field name="model">is.frais</field>
+        <field name="arch" type="xml">
+            <graph type="bar" stacked="False">
+                <field name="date_creation"       type="row"/>
+                <field name="total_frais"         type="measure"/>
+            </graph>
+        </field>
+    </record>
+    <record id="is_frais_search" model="ir.ui.view">
+        <field name="name">is.frais.search</field>
+        <field name="model">is.frais</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="chrono_long"/>
+                <field name="mois_creation"/>
+                <field name="createur_id"/>
+                <field name="activite_id"/>
+                <field name="affaire_id"/>
+                <field name="type_activite"/>
+                <field name="parcours"/>
+                <field name="state"/>
+                <filter name="2018" string="2018" domain="[('annee_creation','=','2018')]"/>
+                <filter name="2019" string="2019" domain="[('annee_creation','=','2019')]"/>
+                <filter name="2020" string="2020" domain="[('annee_creation','=','2020')]"/>
+                <filter name="2021" string="2021" domain="[('annee_creation','=','2021')]"/>
+           </search>
+        </field>
+    </record>
+    <record  id="is_frais_action" model="ir.actions.act_window">
+        <field name="name">Frais</field>
+        <field name="res_model">is.frais</field>
+        <field name="limit">200</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+    </record>
+
+
+
+
+    <record id="is_frais_a_rembourser_par_consultant_pivot" model="ir.ui.view">
+        <field name="name">is_frais_a_rembourser_par_consultant_pivot</field>
+        <field name="model">is.frais</field>
+        <field name="priority" eval="99"/>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="chrono_long"      type="row"/>
+                <field name="total_frais"      type="measure"/>
+                <field name="total_consultant" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record  id="is_frais_a_rembourser_par_consultant_action" model="ir.actions.act_window">
+        <field name="name">Frais mensuels à rembourser par consultant</field>
+        <field name="res_model">is.frais</field>
+        <field name="limit">200</field>
+        <field name="view_mode">pivot,list,form,graph</field>
+        <field name="view_id" ref="is_frais_a_rembourser_par_consultant_pivot"/>
+        <field name="context">{"search_default_2021":1}</field>
+    </record>
+
+
+
+
+
+
+
+
+    <!-- is.depense.effectuee.par -->
+    <record id="is_depense_effectuee_par_form" model="ir.ui.view">
+        <field name="name">is.depense.effectuee.par.form</field>
+        <field name="model">is.depense.effectuee.par</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="is_depense_effectuee_par_tree" model="ir.ui.view">
+        <field name="name">is.depense.effectuee.par.tree</field>
+        <field name="model">is.depense.effectuee.par</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+    <record id="is_depense_effectuee_par_search" model="ir.ui.view">
+        <field name="name">is.depense.effectuee.par.search</field>
+        <field name="model">is.depense.effectuee.par</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+           </search>
+        </field>
+    </record>
+    <record  id="is_depense_effectuee_par_action" model="ir.actions.act_window">
+        <field name="name">Dépenses éffecuées par</field>
+        <field name="res_model">is.depense.effectuee.par</field>
+        <field name="limit">200</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+
+</odoo>

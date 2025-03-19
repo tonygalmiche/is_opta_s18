@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="is_facture_st_form" model="ir.ui.view">
+        <field name="name">is.facture.st.form</field>
+        <field name="model">is.facture.st</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="sous_traitant_id" domain="[('is_type_societe_id.name','=','Sous-Traitant')]"/>
+                        <field name="date_facture"/>
+                        <field name="mois_facture"/>
+                        <field name="annee_facture"/>
+                        <field name="description"/>
+                        <field name="montant_ht"/>
+                        <field name="frais"/>
+                        <field name="client_id"/>
+                        <field name="affaire_id"  domain="[('partner_id','=',client_id)]"/>
+                        <field name="activite_id" domain="[('affaire_id','=',affaire_id)]"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="is_facture_st_tree" model="ir.ui.view">
+        <field name="name">is.facture.st.tree</field>
+        <field name="model">is.facture.st</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="sous_traitant_id"/>
+                <field name="date_facture"/>
+                <field name="description"/>
+                <field name="montant_ht" sum="Total"/>
+                <field name="frais"      sum="Total"/>
+                <field name="client_id"/>
+                <field name="affaire_id"/>
+                <field name="activite_id"/>
+            </list>
+        </field>
+    </record>
+    <record id="is_facture_st_pivot" model="ir.ui.view">
+        <field name="name">is_facture_st_pivot</field>
+        <field name="model">is.facture.st</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="date_facture"       type="row"/>
+                <field name="sous_traitant_id"   type="col"/>
+                <field name="montant_ht"         type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="is_facture_st_graph" model="ir.ui.view">
+        <field name="name">is_facture_st_graph</field>
+        <field name="model">is.facture.st</field>
+        <field name="arch" type="xml">
+            <graph type="bar" stacked="False">
+                <field name="date_facture"       type="row"/>
+                <field name="montant_ht"         type="measure"/>
+            </graph>
+        </field>
+    </record>
+    <record id="is_facture_st_search" model="ir.ui.view">
+        <field name="name">is.facture.st.search</field>
+        <field name="model">is.facture.st</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="mois_facture"/>
+                <field name="annee_facture"/>
+                <field name="name"/>
+                <field name="sous_traitant_id"/>
+                <field name="description"/>
+                <field name="client_id"/>
+                <field name="affaire_id"/>
+                <field name="activite_id"/>
+                <filter name="2018" string="2018" domain="[('annee_facture','=','2018')]"/>
+                <filter name="2019" string="2019" domain="[('annee_facture','=','2019')]"/>
+                <filter name="2020" string="2020" domain="[('annee_facture','=','2020')]"/>
+                <filter name="2021" string="2021" domain="[('annee_facture','=','2021')]"/>
+           </search>
+        </field>
+    </record>
+    <record  id="is_facture_st_action" model="ir.actions.act_window">
+        <field name="name">Facture ST</field>
+        <field name="res_model">is.facture.st</field>
+        <field name="limit">200</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+    </record>
+</odoo>

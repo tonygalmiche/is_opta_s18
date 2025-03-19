@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="is_view_users_form">
+        <field name="name">is_view_users_form</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('oe_title')][1]" position="after">
+                <group>
+                    <field name="is_initiales"/>
+                    <field name="is_compte_general"/>
+                    <!-- <field name="is_google_agenda_ical"/> -->
+                    <field name="is_dynacase_ids" widget="many2many_tags" groups="base.group_system"/>
+                </group>
+            </xpath>
+            <group name="preferences" position="before">
+                <group string="Consultant" groups="is_opta_s18.is_administratif_group">
+                    <field name="is_nb_jours"/>
+                    <field name="is_salaire_an"/>
+                    <field name="is_salaire_jour"/>
+                </group>
+            </group>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="is_view_users_tree">
+        <field name="name">is_view_users_tree</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_tree"/>
+        <field name="arch" type="xml">
+            <field name="login" position="after">
+                <field name="is_initiales"/>
+                <field name="is_compte_general"/>
+                <!-- <field name="is_google_agenda_ical"/> -->
+                <field name="is_dynacase_ids" widget="many2many_tags" groups="base.group_system"/>
+            </field>
+        </field>
+    </record>
+
+
+
+    <!-- Actualiser Google agenda  -->
+    <!-- <record id="actualiser_google_agenda_action_server" model="ir.actions.server">
+        <field name="name">Actualiser Google agenda</field>
+        <field name="type">ir.actions.server</field>
+        <field name="state">code</field>
+        <field name="model_id" ref="is_opta_s18.model_res_users"/>
+        <field name="binding_model_id" ref="is_opta_s18.model_res_users"/>
+        <field name="code">
+records.actualiser_google_agenda_action()
+        </field>
+    </record> -->
+
+</odoo>

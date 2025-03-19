@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem
+        id="is_crm_main_menu"
+        name="CRM"
+        sequence="1"
+    />
+
+
+
+    <menuitem
+        id="is_affaire_main_menu"
+        name="Affaires"
+        parent="is_crm_main_menu"
+        sequence="10"
+    />
+    <menuitem
+        id="is_affaire_menu"
+        name="Affaires"
+        parent="is_affaire_main_menu"
+        sequence="10"
+        action="is_affaire_action"
+    />
+
+
+    
+    <menuitem
+        id="is_affaire_vendue_par_view_menu"
+        name="CA vendu par consultant"
+        parent="is_affaire_main_menu"
+        sequence="20"
+    />
+    <menuitem
+        id="is_affaire_vendue_par_view_affaire_id_menu"
+        name="CA vendu par consultant et par affaire"
+        parent="is_affaire_vendue_par_view_menu"
+        sequence="10"
+        action="is_affaire_vendue_par_view_affaire_id_action"
+    />
+    <menuitem
+        id="is_affaire_vendue_par_view_partner_id_menu"
+        name="CA vendu par consultant et par client"
+        parent="is_affaire_vendue_par_view_menu"
+        sequence="20"
+        action="is_affaire_vendue_par_view_partner_id_action"
+    />
+    <menuitem
+        id="is_affaire_vendue_par_view_type_intervention_menu"
+        name="CA vendu par consultant et par type d'intervention"
+        parent="is_affaire_vendue_par_view_menu"
+        sequence="30"
+        action="is_affaire_vendue_par_view_type_intervention_action"
+    />
+    <menuitem
+        id="is_affaire_vendue_par_view_secteur_id_menu"
+        name="CA vendu par consultant et par secteur"
+        parent="is_affaire_vendue_par_view_menu"
+        sequence="40"
+        action="is_affaire_vendue_par_view_secteur_id_action"
+    />
+
+
+
+
+    <menuitem
+        id="is_activite_menu"
+        name="Activités"
+        parent="is_crm_main_menu"
+        sequence="40"
+        action="is_activite_action"
+    />
+
+
+
+    <!-- Suivi du temps -->
+    <menuitem
+        id="is_suivi_temps_main_menu"
+        name="Suivi temps"
+        parent="is_crm_main_menu"
+        sequence="50"
+    />
+    <menuitem
+        id="is_suivi_temps_menu"
+        name="Suivi du temps"
+        parent="is_suivi_temps_main_menu"
+        sequence="10"
+        action="is_suivi_temps_action"
+    />
+    <menuitem
+        id="is_suivi_temps_formation_menu"
+        name="Suivi temps formation"
+        parent="is_suivi_temps_main_menu"
+        sequence="20"
+        action="is_suivi_temps_formation_action"
+    />
+    <menuitem
+        id="is_suivi_temps_back_office_menu"
+        name="Suivi temps back-office"
+        parent="is_suivi_temps_main_menu"
+        sequence="30"
+        action="is_suivi_temps_back_office_action"
+    />
+    <menuitem
+        id="is_suivi_temps_simplifie_wizard_menu"
+        name="Interface simplifiée de suivi du temps"
+        parent="is_suivi_temps_main_menu"
+        sequence="40"
+        action="is_suivi_temps_simplifie_wizard_action"
+    />
+
+
+
+
+    <menuitem
+        id="is_frais_main_menu"
+        name="Frais"
+        parent="is_crm_main_menu"
+        sequence="60"
+    />
+    <menuitem
+        id="is_frais_menu"
+        name="Frais"
+        parent="is_frais_main_menu"
+        sequence="10"
+        action="is_frais_action"
+    />
+    <menuitem
+        id="is_frais_lignes_view_menu"
+        name="Lignes des Frais"
+        parent="is_frais_main_menu"
+        sequence="20"
+        action="is_frais_lignes_view_action"
+    />
+    <menuitem
+        id="is_frais_a_rembourser_par_consultant_menu"
+        name="Frais mensuels à rembourser par consultant"
+        parent="is_frais_main_menu"
+        sequence="30"
+        action="is_frais_a_rembourser_par_consultant_action"
+    />
+
+
+
+    <menuitem
+        id="is_crm_facture_menu"
+        name="Factures"
+        parent="is_crm_main_menu"
+        sequence="80"
+    />
+    <!-- <menuitem
+        id="is_account_invoice_menu"
+        name="Factures"
+        parent="is_crm_facture_menu"
+        sequence="10"
+        action="is_account_invoice_action"
+    /> -->
+
+
+    <menuitem
+        id="is_facture_st_menu"
+        name="Factures ST"
+        parent="is_crm_facture_menu"
+        sequence="15"
+        action="is_facture_st_action"
+    />
+
+
+    <menuitem
+        id="is_export_compta_menu"
+        name="Export Compta Cegid"
+        parent="is_crm_facture_menu"
+        sequence="20"
+        action="is_export_compta_action"
+    />
+    <menuitem
+        id="is_export_compta_ana_menu"
+        name="Export Compta Analytique Cegid"
+        parent="is_crm_facture_menu"
+        sequence="30"
+        action="is_export_compta_ana_action"
+    />
+
+
+
+    <menuitem
+        id="is_client_menu"
+        name="Clients"
+        parent="is_crm_main_menu"
+        sequence="85"
+        action="is_client_action"
+    />
+    <menuitem
+        id="is_partenai_menu"
+        name="Partenaires"
+        parent="is_crm_main_menu"
+        sequence="86"
+        action="is_partenaire_action"
+    /> 
+
+
+
+    <!-- Google Agenda -->
+    <!-- <record id="is_google_agenda_main_menu" model="ir.ui.menu" >
+        <field name="name">Google Agenda</field>
+        <field name="sequence">87</field>
+        <field name="parent_id" eval="ref('is_crm_main_menu')"/>
+        <field name="groups_id" eval="[(6,0,[
+        ])]"/>
+    </record>
+    <menuitem
+        id="is_google_agenda_temps_prevu_menu"
+        name="Temps prévu par jour et par consultant"
+        parent="is_google_agenda_main_menu"
+        sequence="10"
+        action="is_google_agenda_temps_prevu_action"
+    />
+    <menuitem
+        id="is_google_agenda_temps_dispo_menu"
+        name="Temps disponible par jour et par consultant"
+        parent="is_google_agenda_main_menu"
+        sequence="20"
+        action="is_google_agenda_temps_dispo_action"
+    />
+    <menuitem
+        id="is_google_agenda_categorie_menu"
+        name="Catégories"
+        parent="is_google_agenda_main_menu"
+        sequence="30"
+        action="is_google_agenda_categorie_action"
+    /> -->
+
+
+    <!-- Tables -->
+    <record id="is_crm_table_menu" model="ir.ui.menu" >
+        <field name="name">Tables</field>
+        <field name="sequence">90</field>
+        <field name="parent_id" eval="ref('is_crm_main_menu')"/>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_administratif_group'),
+        ])]"/>
+    </record>
+    <menuitem
+        id="is_type_societe_menu"
+        name="Types de sociétés"
+        parent="is_crm_table_menu"
+        sequence="10"
+        action="is_type_societe_action"
+    />
+    <menuitem
+        id="is_type_intervention_menu"
+        name="Types d'interventions"
+        parent="is_crm_table_menu"
+        sequence="20"
+        action="is_type_intervention_action"
+    />
+
+
+    <menuitem
+        id="is_secteur_menu"
+        name="Secteurs"
+        parent="is_crm_table_menu"
+        sequence="30"
+        action="is_secteur_action"
+    />
+    <menuitem
+        id="is_type_offre_menu"
+        name="Types d'offres"
+        parent="is_crm_table_menu"
+        sequence="40"
+        action="is_type_offre_action"
+    />
+    <menuitem
+        id="is_cause_menu"
+        name="Causes"
+        parent="is_crm_table_menu"
+        sequence="50"
+        action="is_cause_action"
+    />
+
+
+
+    <menuitem
+        id="is_depense_effectuee_par_menu"
+        name="Dépenses éffecuées par"
+        parent="is_crm_table_menu"
+        sequence="60"
+        action="is_depense_effectuee_par_action"
+    />
+
+
+    <menuitem
+        id="is_product_template_menu"
+        name="Articles"
+        parent="is_crm_table_menu"
+        sequence="70"
+        action="is_product_template_action"
+    />
+
+
+    <!-- <menuitem
+        id="is_account_account_menu"
+        name="Plan comptable"
+        parent="is_crm_table_menu"
+        sequence="72"
+        action="is_account_account_action"
+    /> -->
+    <!-- <menuitem
+        id="is_account_fiscal_position_menu"
+        name="Positions fiscales"
+        parent="is_crm_table_menu"
+        sequence="74"
+        action="is_account_fiscal_position_action"
+    /> -->
+
+    <record id="is_crm_indicateur_menu" model="ir.ui.menu" >
+        <field name="name">Indicateurs</field>
+        <field name="sequence">95</field>
+        <field name="parent_id" eval="ref('is_crm_main_menu')"/>
+    </record>
+    <menuitem
+        id="is_suivi_production_menu"
+        name="Suivi de production"
+        parent="is_crm_indicateur_menu"
+        sequence="10"
+        action="is_suivi_production_action"
+    />
+    <!-- <menuitem
+        id="is_suivi_production_facture_menu"
+        name="Suivi de production sur facture"
+        parent="is_crm_indicateur_menu"
+        sequence="20"
+        action="is_suivi_production_facture_action"
+    /> -->
+
+
+    <menuitem
+        id="is_activite_suivi_temps_menu"
+        name="Temps de déplacement par mois"
+        parent="is_crm_indicateur_menu"
+        sequence="30"
+        action="is_activite_suivi_temps_action"
+    />
+    <menuitem
+        id="is_suivi_production_affaire_menu"
+        name="Suivi de production par affaire"
+        parent="is_crm_indicateur_menu"
+        sequence="40"
+        action="is_suivi_production_affaire_action"
+    /> 
+
+
+
+</odoo>

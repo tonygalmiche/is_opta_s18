@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- is.activite -->
+    <record id="is_activite_form" model="ir.ui.view">
+        <field name="name">is.activite.form</field>
+        <field name="model">is.activite</field>
+        <field name="arch" type="xml">
+            <form>
+                <style>
+                    .o_form_view .o_form_sheet_bg > .o_form_sheet{
+                        max-width: 1800px;
+                    }
+                    .o_form_label{
+                        white-space: nowrap;
+                    }
+                </style>
+                <header>
+                    <button
+                        name="vers_diffuse"
+                        type="object"
+                        string="vers Diffusé"
+                        class="oe_highlight"
+                        invisible="state not in ['brouillon']"
+                    />
+                    <button
+                        name="vers_valide"
+                        type="object"
+                        string="vers Validé"
+                        class="oe_highlight"
+                        invisible="state != 'diffuse'"
+                    />
+                    <button
+                        name="vers_brouillon"
+                        type="object"
+                        string="vers Brouillon"
+                        invisible="state != 'diffuse'"
+                    />
+                    <button 
+                        name="vers_diffuse" 
+                        type="object"
+                        string="vers Diffusé"
+                        invisible="state != 'valide'"
+                    />
+                    <button 
+                        name="creation_frais" 
+                        type="object"
+                        string="Nouvelle fiche de frais"
+                        invisible="state not in ['brouillon','diffuse']"
+                    />
+                    <button 
+                        name="creation_activite" 
+                        type="object"
+                        string="Nouvelle activité"
+                    />
+                    <field 
+                        name="state" 
+                        widget="statusbar"
+                        clickable="True"
+                    />
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="affaire_id"/>
+                            <field name="responsable_id"/>
+                            <field name="partner_id"/>
+                            <field name="phase_activite_id" domain="[('affaire_id','=',affaire_id)]" />
+                            <field name="nature_activite"  default_focus="1"/>
+                            <field name="date_debut"/>
+                            <field name="dates_intervention"/>
+                            <field name="intervenant_id" domain="[('affaire_id','=',affaire_id)]"/>
+                        </group>
+                        <group>
+                            <field name="tarification_id" domain="[('affaire_id','=',affaire_id)]" />
+                            <field name="montant"/>
+
+                            <field name="nb_realise_vsb" invisible="1"/>
+                            <field name="nb_realise"      invisible="nb_realise_vsb == False"/>
+                            <field name="nb_realise_auto" invisible="nb_realise_vsb == True"/>
+
+                            <field name="nb_facturable"/>
+                            <field name="total_facturable"/>
+                            <field name="jours_consommes"/>
+                            <field name="facture_sur_accompte"/>
+                            <field name="non_facturable"/>
+                            <field name="nb_stagiaires" invisible="nb_stagiaires == 0"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="point_cle"/>
+                    </group>
+                    <group string="Suivi du temps">
+
+
+
+                        <!-- context="{'default_activite_id': active_id}" -->
+                        <field 
+                            name="suivi_temps_ids"
+                            nolabel="1"
+                        >
+                            <list>
+                                <button string="Suivi du temps" name="acceder_suivi_temps_action" type="object" icon="fa-search-plus"/>
+                                <button string="Copie" name="copie_suivi_temps_action" type="object" icon="fa-files-o "/>
+                                <field name="type_activite"/>
+                                <field name="date_activite"/>
+                                <field name="nb_stagiaires"                            sum="Total"/>
+                                <field name="nb_heures"            widget="float_time" sum="Total"/>
+                                <field name="realise_st"/>
+                                <field name="a_distance"/>
+                                <field name="aller_heure_depart"   widget="float_time"/>
+                                <field name="aller_heure_arrivee"  widget="float_time"/>
+                                <field name="retour_heure_depart"  widget="float_time"/>
+                                <field name="retour_heure_arrivee" widget="float_time"/>
+                                <field name="temps_deplacement"    widget="float_time" sum="Total"/>
+                                <field name="detail_activite"/>
+                            </list>
+                            <form>
+                                <sheet>
+                                    <group>
+                                        <group>
+                                            <field name="type_activite"/>
+                                            <field name="date_activite"/>
+                                            <field name="nb_stagiaires"/>
+                                            <field name="nb_heures"            widget="float_time"/>
+                                            <field name="realise_st"/>
+                                            <field name="a_distance"/>
+                                        </group>
+                                        <group>
+                                            <field name="aller_heure_depart"   widget="float_time"/>
+                                            <field name="aller_heure_arrivee"  widget="float_time"/>
+                                            <field name="retour_heure_depart"  widget="float_time"/>
+                                            <field name="retour_heure_arrivee" widget="float_time"/>
+                                            <field name="temps_deplacement"    widget="float_time"/>
+                                         </group>
+                                    </group>
+                                    <group>
+                                        <field name="detail_activite"/>
+                                    </group>
+                                 </sheet>
+                            </form>
+
+
+                        </field>
+                    </group>
+                    <group string="Suivi des frais">
+                            <!-- context="{'default_activite_id': active_id}" -->
+                        <field 
+                            name="frais_ids"
+                            nolabel="1"
+                        >
+                            <list>
+                                <button string="Frais" name="acceder_frais_action" type="object" icon="fa-search-plus"/>
+                                <field name="chrono_long"/>
+                                <field name="date_creation"/>
+                                <field name="createur_id"/>
+                                <field name="activite_id"/>
+                                <field name="affaire_id"/>
+                                <field name="type_activite"/>
+                                <field name="frais_forfait"/>
+                                <field name="nb_jours"/>
+                                <field name="montant_forfait"/>
+                                <field name="parcours"/>
+                                <field name="dates"/>
+                            </list>
+                            <form>
+                                <group>
+                                    <group>
+                                        <field name="chrono_long"/>
+                                        <field name="type_activite"/>
+                                        <field name="frais_forfait"/>
+                                        <field name="nb_jours"        invisible="frais_forfait != True"/>
+
+
+
+                                        <!-- domain="[('affaire_id','=',active_id.affaire_id)]" -->
+                                        <field name="forfait_jour_id" invisible="frais_forfait != True"/>
+                                        <field name="montant_forfait" invisible="frais_forfait != True"/>
+                                        <field name="parcours"/>
+                                        <field name="dates"/>
+                                    </group>
+                                    <group>
+                                        <field name="createur_id"/>
+                                        <field name="date_creation"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <field name="ligne_ids" nolabel="1">
+                                        <list editable="bottom">
+                                            <field name="partner_id"/>
+                                            <field name="product_id"/>
+                                            <field name="effectuee_par_id"/>
+                                            <field name="montant_ttc"/>
+                                            <field name="montant_tva"/>
+                                            <field name="refacturable"/>
+                                            <field name="commentaire"/>
+                                            <field name="justificatif_joint"/>
+                                        </list>
+                                    </field>
+                                </group>
+                                <group>
+                                    <field name="justificatif_ids" widget="many2many_binary"/>
+                                </group>
+                                <group>
+                                    <field name="total_consultant"/>
+                                    <field name="total_refacturable"/>
+                                    <field name="total_frais"/>
+                                    <field name="total_tva_recuperable"/>
+                                </group>
+                            </form>
+                        </field>
+                    </group>
+                    <group>
+                        <field name="pieces_jointes_ids" widget="many2many_binary"/>
+                    </group>
+                    <group>
+                        <field name="invoice_id"/>
+                        <field name="active" groups="base.group_system"/>
+                        <field name="is_dynacase_ids" widget="many2many_tags" groups="base.group_system"/>
+                    </group>
+                </sheet>
+                 <chatter open_attachments="True"/>
+            </form>
+        </field>
+    </record>
+    <record id="is_activite_tree" model="ir.ui.view">
+        <field name="name">is.activite.tree</field>
+        <field name="model">is.activite</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="affaire_id"/>
+                <field name="responsable_id"/>
+                <field name="partner_id"/>
+                <field name="phase_activite_id"/>
+                <field name="nature_activite"/>
+                <field name="date_debut"/>
+                <field name="dates_intervention"/>
+                <field name="intervenant_product_id"/>
+                <field name="tarification_id"/>
+                <field name="nb_realise"       sum="Total"/>
+                <field name="nb_facturable"    sum="Total"/>
+                <field name="total_facturable" sum="Total"/>
+                <field name="jours_consommes"  sum="Total"/>
+                <field name="state"/>
+                <field name="invoice_id"/>
+                <field name="is_dynacase_ids" widget="many2many_tags" groups="base.group_system"/>
+            </list>
+        </field>
+    </record>
+
+
+    <record id="is_activite_invoice_tree" model="ir.ui.view">
+        <field name="name">is_activite_invoice_tree</field>
+        <field name="model">is.activite</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="phase_activite_id"/>
+                <field name="nature_activite"/>
+                <field name="dates_intervention"/>
+                <field name="intervenant_product_id"/>
+                <field name="nb_facturable"    sum="Total"/>
+                <field name="total_facturable" sum="Total"/>
+            </list>
+        </field>
+    </record>
+
+
+
+    <record id="is_activite_search" model="ir.ui.view">
+        <field name="name">is.activite.search</field>
+        <field name="model">is.activite</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="affaire_id"/>
+                <field name="responsable_id"/>
+                <field name="partner_id"/>
+                <field name="phase_activite_id"/>
+                <field name="nature_activite"/>
+                <field name="intervenant_product_id"/>
+           </search>
+        </field>
+    </record>
+    <record id="is_activite_pivot" model="ir.ui.view">
+        <field name="name">is_activite_pivot</field>
+        <field name="model">is.activite</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="date_debut"             type="row"/>
+                <field name="intervenant_product_id" type="col"/>
+                <field name="total_facturable"       type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="is_activite_graph" model="ir.ui.view">
+        <field name="name">is_activite_graph</field>
+        <field name="model">is.activite</field>
+        <field name="arch" type="xml">
+            <graph type="bar" stacked="False">
+                <field name="date_debut"       type="row"/>
+                <field name="total_facturable" type="measure"/>
+            </graph>
+        </field>
+    </record>
+    <record  id="is_activite_action" model="ir.actions.act_window">
+        <field name="name">Activités</field>
+        <field name="res_model">is.activite</field>
+        <field name="limit">200</field>
+        <field name="view_mode">list,form,pivot,graph</field>
+        <field name="view_id" ref="is_activite_tree"/>
+    </record>
+
+</odoo>

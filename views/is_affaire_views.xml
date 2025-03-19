@@ -1,0 +1,593 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- is.affaire -->
+    <record id="is_affaire_seq" model="ir.sequence">
+        <field name="name">Code Affaire</field>
+        <field name="code">is.affaire</field>
+        <field name="prefix"></field>
+        <field name="padding">5</field>
+        <field eval="False" name="company_id"/>
+    </record>
+    <record id="is_affaire_form" model="ir.ui.view">
+        <field name="name">is.affaire.form</field>
+        <field name="model">is.affaire</field>
+        <field name="arch" type="xml">
+            <form>
+                <style>
+                    .o_form_view .o_form_sheet_bg > .o_form_sheet{
+                        max-width: 1800px;
+                    }
+                    .o_form_label{
+                        white-space: nowrap;
+                    }
+                </style>
+                <header>
+                    <button
+                        name="vers_affaire_gagnee"
+                        type="object"
+                        string="vers Affaire gagnée"
+                        class="oe_highlight"
+                        invisible="state != 'offre_en_cours'" 
+                    />
+                  <button
+                        name="vers_offre_en_cours"
+                        type="object"
+                        string="vers Offre en cours"
+                        invisible="state not in ['offre_perdue','affaire_gagnee']"
+                    />
+                    <button
+                        name="vers_offre_perdue"
+                        type="object"
+                        string="vers Offre perdue"
+                        invisible="state != 'offre_en_cours'"
+                    />
+                    <button 
+                        name="vers_affaire_soldee" 
+                        type="object"
+                        string="vers Affaire soldée"
+                        invisible="state != 'affaire_gagnee'"
+                    />
+                    <button 
+                        name="de_affaire_soldee_vers_gagnee" 
+                        type="object"
+                        string="vers Affaire gagnée"
+                        invisible="state != 'affaire_soldee'"
+                    />
+                    <button 
+                        name="creation_activite" 
+                        type="object"
+                        string="Nouvelle activité"
+                        invisible="state != 'affaire_gagnee'"
+                    />
+                    <button 
+                        name="creation_frais" 
+                        type="object"
+                        string="Nouvelle fiche de frais"
+                        invisible="state != 'affaire_gagnee'"
+                    />
+                    <button 
+                        name="creation_facture" 
+                        type="object"
+                        string="Nouvelle facture"
+                        invisible="state != 'affaire_gagnee'"
+                    />
+                    <field 
+                        name="state" 
+                        widget="statusbar"
+                        statusbar_visible="offre_en_cours,affaire_gagnee,affaire_soldee" 
+                    />
+                </header>
+                <sheet>
+                    <group>
+                        <field name="code_long"/>
+                        <field name="nature_affaire"/>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="type_intervention_id"/>
+                            <field name="secteur_id"/>
+                            <field name="type_offre_id"/>
+                            <field name="fiscal_position_id"/>
+
+                        </group>
+                        <group>
+                            <field name="date_creation"/>
+                            <field name="createur_id"/>
+                            <field name="ca_previsionnel"/>
+                            <field name="jours_prevus"/>
+                            <field name="jours_realises"/>
+                            <field name="jours_consommes"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="proposition_ids" widget="many2many_binary"/>
+                    </group>
+                    <group invisible="state not in ['offre_en_cours','offre_perdue']">
+                        <field name="cause_id"/>
+                        <field name="commentaire"/>
+                    </group>
+                    <group>
+                        <field name="date_signature"/>
+                    </group>
+                    <group>
+                        <field name="vendue_par_ids" nolabel="1">
+                            <list editable="bottom">
+                                <field name="user_id"/>
+                                <field name="repartition"/>
+                                <field name="commentaire"/>
+                            </list>
+                        </field>
+                    </group>
+                    <group  invisible="state not in ['affaire_gagnee']">
+                        <field name="activer_phases"/>
+                    </group>
+                    <notebook>
+                        <page string="Affaire" invisible="state not in ['affaire_gagnee','affaire_soldee']">
+                            <group string="Affaire">
+                                <group>
+                                    <field name="responsable_id"/>
+                                </group>
+                                <group>
+                                    <field name="correspondant_id"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="taux_ids" nolabel="1">
+                                    <list editable="bottom">
+                                        <field name="montant"/>
+                                        <field name="unite"/>
+                                        <field name="commentaire"/>
+                                    </list>
+                                </field>
+                            </group>
+
+
+                            <group string="Gestion des frais">
+                                <field name="nature_frais"/>
+                            </group>
+                            <group>
+                                <field name="forfait_jours_ids" nolabel="1">
+                                    <list editable="bottom">
+                                        <field name="montant"/>
+                                        <field name="nb_jours"/>
+                                        <field name="commentaire"/>
+                                    </list>
+                                </field>
+                            </group>
+                            <group string="Intervenants">
+                                <field name="intervenant_ids" nolabel="1">
+                                    <list editable="bottom">
+                                        <field name="intervenant_id"/>
+                                        <field name="type_intervenant"/>
+                                        <field name="commentaire"/>
+                                    </list>
+                                </field>
+                            </group>
+                            <group>
+                                <field name="consultant_ids" widget="many2many_tags"/>
+                            </group>
+                            <group string="Documents">
+                                <field name="convention_ids" widget="many2many_binary"/>
+                            </group>
+                        </page>
+                        <page string="Phases" invisible="activer_phases != True">
+                            <group>
+                                <field name="phase_ids" nolabel="1">
+                                    <list editable="bottom">
+                                        <field name="name"/>
+                                        <field name="jours_prevus"    sum="Total"/>
+                                        <field name="total_vendu"     sum="Total"/>
+                                        <field name="jours_consommes" sum="Total"/>
+                                        <field name="nb_realise"      sum="Total"/>
+                                        <field name="montant_realise" sum="Total"/>
+                                        <field name="montant_restant" sum="Total"/>
+                                        <field name="avancement" widget="progressbar"/>
+                                    </list>
+                                </field>
+                            </group>
+                            <group>
+                                <field name="activite_phase_ids" nolabel="1" >
+                                    <list editable="bottom">
+                                        <button string="Activités de cette phase" name="acceder_activites_action" type="object" icon="fa-list"/>
+                                        <button string="Nouvelle activité"        name="creation_activite_action" type="object" icon="fa-plus"/>
+                                        <field name="affaire_phase_id" domain="[('affaire_id','=',parent.id)]"/>
+                                        <field name="name"/>
+                                        <field name="jours_prevus"    sum="Total"/>
+                                        <field name="montant_vendu"/>
+                                        <field name="total_vendu"     sum="Total"/>
+                                        <field name="jours_consommes" sum="Total"/>
+                                        <field name="nb_realise"      sum="Total"/>
+                                        <field name="montant_realise" sum="Total"/>
+                                        <field name="montant_restant" sum="Total"/>
+                                        <field name="avancement" widget="progressbar"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Activités" invisible="state not in ['affaire_gagnee','affaire_soldee']">
+                            <group>
+                                <field 
+                                    name="activite_ids"
+                                    nolabel="1"
+                                >
+                                    <list default_order="date_debut desc">
+                                        <button string="Activité" name="acceder_activite_action" type="object" icon="fa-search-plus"/>
+                                        <field name="partner_id"/>
+                                        <field name="phase_activite_id" />
+                                        <field name="nature_activite"/>
+                                        <field name="date_debut"/>
+                                        <field name="dates_intervention"/>
+                                        <field name="intervenant_id"/>
+                                        <field name="montant" />
+                                        <field name="nb_realise"       sum="Total"/>
+                                        <field name="nb_facturable"    sum="Total"/>
+                                        <field name="total_facturable" sum="Total"/>
+                                        <field name="state" readonly="1"/>
+                                        <field name="facture_sur_accompte"/>
+                                        <field name="invoice_id"/>
+                                    </list>
+                                </field>
+                            </group>
+                            <group>
+                                <field name="montant_realise" sum="Total"/>
+                                <field name="montant_restant" sum="Total"/>
+                            </group>
+                        </page>
+                        <page string="Frais" invisible="state not in ['affaire_gagnee','affaire_soldee']">
+                            <group>
+                                <field name="frais_ids" nolabel="1" readonly="1">
+                                    <list>
+                                        <button string="Frais" name="acceder_frais_action" type="object" icon="fa-search-plus"/>
+                                        <field name="chrono_long"/>
+                                        <field name="date_creation"/>
+                                        <field name="createur_id"/>
+                                        <field name="activite_id"/>
+                                        <field name="affaire_id"/>
+                                        <field name="type_activite"/>
+                                        <field name="frais_forfait"/>
+                                        <field name="nb_jours"/>
+                                        <field name="montant_forfait"/>
+                                        <field name="parcours"/>
+                                        <field name="dates"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Suivi du temps"  invisible="state not in ['affaire_gagnee','affaire_soldee']">
+                            <group>
+                                <field name="suivi_temps_ids" nolabel="1" readonly="1">
+                                    <list>
+                                        <button string="Suivi du temps" name="acceder_suivi_temps_action" type="object" icon="fa-search-plus"/>
+                                        <field name="activite_id"/>
+                                        <field name="type_activite"/>
+                                        <field name="date_activite"/>
+                                        <field name="nb_stagiaires"                            sum="Total"/>
+                                        <field name="nb_heures"            widget="float_time" sum="Total"/>
+                                        <field name="realise_st"/>
+                                        <field name="a_distance"/>
+                                        <field name="aller_heure_depart"   widget="float_time"/>
+                                        <field name="aller_heure_arrivee"  widget="float_time"/>
+                                        <field name="retour_heure_depart"  widget="float_time"/>
+                                        <field name="retour_heure_arrivee" widget="float_time"/>
+                                        <field name="temps_deplacement"    widget="float_time" sum="Total"/>
+                                        <field name="detail_activite"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </page>
+                        <page string="Factures" invisible="state not in ['affaire_gagnee','affaire_soldee']">
+                            <group>
+                                <!-- <field name="facture_ids" nolabel="1" readonly="1">
+                                    <list>
+                                        <button string="Facture" name="acceder_facture_action" type="object" icon="fa-search-plus"/>
+                                        <field name="date_invoice"/>
+                                        <field name="number"/>
+                                        <field name="is_createur_id"/>
+                                        <field name="date_due"/>
+                                        <field name="amount_untaxed"      string="Total HT"   sum="Total"/>
+                                        <field name="amount_tax"          string="TVA"        sum="Total"/>
+                                        <field name="amount_total_signed" string="Total TTC"  sum="Total"/>
+                                        <field name="residual_signed"     string="Restant du" sum="Total"/>
+                                        <field name="state"/>
+                                    </list>
+                                </field> -->
+                            </group>
+                            <group>
+                                <field name="total_facture_ht"/>
+                                <field name="total_facture_ttc"/>
+                                <field name="total_encaissement"/>
+                                <field name="reste_encaissement"/>
+                            </group>
+                        </page>
+                        <page string="Factures ST" invisible="state not in ['affaire_gagnee','affaire_soldee']">
+                            <group>
+                                <field name="facture_st_ids" nolabel="1" readonly="1">
+                                    <list>
+                                        <button string="Facture ST" name="acceder_facture_st_action" type="object" icon="fa-search-plus"/>
+                                        <field name="name"/>
+                                        <field name="sous_traitant_id"/>
+                                        <field name="date_facture"/>
+                                        <field name="description"/>
+                                        <field name="montant_ht" sum="Total"/>
+                                        <field name="frais"      sum="Total"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </page>
+
+                    </notebook>
+                    <group>
+                        <field name="date_solde" readonly="True"/>
+                        <field name="active" groups="base.group_system"/>
+                    </group>
+                </sheet>
+                <chatter open_attachments="True"/>
+            </form>
+        </field>
+    </record>
+
+    
+    <record id="is_affaire_tree" model="ir.ui.view">
+        <field name="name">is.affaire.tree</field>
+        <field name="model">is.affaire</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code_long"/>
+                <field name="nature_affaire"/>
+                <field name="partner_id"/>
+                <field name="type_offre_id"/>
+                <field name="secteur_id"/>
+                <field name="date_creation"/>
+                <field name="createur_id"/>
+                <field name="responsable_id"/>
+                <field name="ca_previsionnel"/>
+                <field name="total_facture_ht"/>
+                <field name="state"/>
+                <field name="is_dynacase_ids" widget="many2many_tags" groups="base.group_system"/>
+            </list>
+        </field>
+    </record>
+    <record id="is_affaire_pivot" model="ir.ui.view">
+        <field name="name">is_affaire_pivot</field>
+        <field name="model">is.affaire</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="date_creation"   type="row" interval="year"/>
+                <field name="secteur_id"      type="col"/>
+                <field name="ca_previsionnel" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="is_affaire_search" model="ir.ui.view">
+        <field name="name">is.affaire.search</field>
+        <field name="model">is.affaire</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="code_long"/>
+                <field name="nature_affaire"/>
+                <field name="partner_id"/>
+                <field name="type_intervention_id"/>
+                <field name="secteur_id"/>
+                <field name="annee_creation"/>
+                <field name="state"/>
+           </search>
+        </field>
+    </record>
+    <record  id="is_affaire_action" model="ir.actions.act_window">
+        <field name="name">Affaires</field>
+        <field name="res_model">is.affaire</field>
+        <field name="limit">200</field>
+        <field name="view_mode">list,form,pivot</field>
+    </record>
+
+    <!-- is.type.intervention -->
+    <record id="is_type_intervention_form" model="ir.ui.view">
+        <field name="name">is.type.intervention.form</field>
+        <field name="model">is.type.intervention</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="is_type_intervention_tree" model="ir.ui.view">
+        <field name="name">is.type.intervention.tree</field>
+        <field name="model">is.type.intervention</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+    <record id="is_type_intervention_search" model="ir.ui.view">
+        <field name="name">is.type.intervention.search</field>
+        <field name="model">is.type.intervention</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+           </search>
+        </field>
+    </record>
+    <record  id="is_type_intervention_action" model="ir.actions.act_window">
+        <field name="name">Types d'interventions</field>
+        <field name="res_model">is.type.intervention</field>
+        <field name="limit">200</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+
+    <!-- is.secteur -->
+    <record id="is_secteur_form" model="ir.ui.view">
+        <field name="name">is.secteur.form</field>
+        <field name="model">is.secteur</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="is_secteur_tree" model="ir.ui.view">
+        <field name="name">is.secteur.tree</field>
+        <field name="model">is.secteur</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+    <record id="is_secteur_search" model="ir.ui.view">
+        <field name="name">is.secteur.search</field>
+        <field name="model">is.secteur</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+           </search>
+        </field>
+    </record>
+    <record  id="is_secteur_action" model="ir.actions.act_window">
+        <field name="name">Secteurs</field>
+        <field name="res_model">is.secteur</field>
+        <field name="limit">200</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- is.type.offre -->
+    <record id="is_type_offre_form" model="ir.ui.view">
+        <field name="name">is.type.offre.form</field>
+        <field name="model">is.type.offre</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="is_type_offre_tree" model="ir.ui.view">
+        <field name="name">is.type.offre.tree</field>
+        <field name="model">is.type.offre</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+    <record id="is_type_offre_search" model="ir.ui.view">
+        <field name="name">is.type.offre.search</field>
+        <field name="model">is.type.offre</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+           </search>
+        </field>
+    </record>
+    <record  id="is_type_offre_action" model="ir.actions.act_window">
+        <field name="name">Types d'offre</field>
+        <field name="res_model">is.type.offre</field>
+        <field name="limit">200</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+
+    <!-- is.cause -->
+    <record id="is_cause_form" model="ir.ui.view">
+        <field name="name">is.cause.form</field>
+        <field name="model">is.cause</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="is_cause_tree" model="ir.ui.view">
+        <field name="name">is.cause.tree</field>
+        <field name="model">is.cause</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+    <record id="is_cause_search" model="ir.ui.view">
+        <field name="name">is.cause.search</field>
+        <field name="model">is.cause</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+           </search>
+        </field>
+    </record>
+    <record  id="is_cause_action" model="ir.actions.act_window">
+        <field name="name">Causes</field>
+        <field name="res_model">is.cause</field>
+        <field name="limit">200</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+
+    <!-- is.affaire.taux.journalier -->
+    <record id="is_affaire_taux_journalier_form" model="ir.ui.view">
+        <field name="name">is.affaire.taux.journalier.form</field>
+        <field name="model">is.affaire.taux.journalier</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="montant"/>
+                            <field name="unite"/>
+                            <field name="commentaire"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="is_affaire_taux_journalier_tree" model="ir.ui.view">
+        <field name="name">is.affaire.taux.journalier.tree</field>
+        <field name="model">is.affaire.taux.journalier</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="montant"/>
+                <field name="unite"/>
+                <field name="commentaire"/>
+            </list>
+        </field>
+    </record>
+    <record id="is_affaire_taux_journalier_search" model="ir.ui.view">
+        <field name="name">is.affaire.taux.journalier.search</field>
+        <field name="model">is.affaire.taux.journalier</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="montant"/>
+                <field name="unite"/>
+                <field name="commentaire"/>
+            </search>
+        </field>
+    </record>
+ 
+</odoo>

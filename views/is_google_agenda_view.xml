@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="is_google_agenda_form" model="ir.ui.view">
+            <field name="name">is.google.agenda.form</field>
+            <field name="model">is.google.agenda</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="user_id"/>
+                            <field name="date_debut"/>
+                            <field name="date_fin"/>
+                            <field name="duree" widget="float_time"/>
+                            <field name="temps_disponible"/>
+                            <field name="event_id"/>
+                            <field name="intitule"/>
+                            <field name="categorie_id"/>
+                        </group>
+                     </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="is_google_agenda_tree" model="ir.ui.view">
+            <field name="name">is.google.agenda.tree</field>
+            <field name="model">is.google.agenda</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="user_id"/>
+                    <field name="date_debut"/>
+                    <field name="date_fin"/>
+                    <field name="duree" widget="float_time"/>
+                    <field name="temps_disponible"/>
+                    <field name="intitule"/>
+                    <field name="categorie_id"/>
+                </tree>
+            </field>
+        </record>
+        <record id="is_google_agenda_search" model="ir.ui.view">
+            <field name="name">is.google.agenda.search</field>
+            <field name="model">is.google.agenda</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="user_id"/>
+                    <field name="intitule"/>
+                    <field name="categorie_id"/>
+                    <field name="temps_disponible"/>
+               </search>
+            </field>
+        </record>
+
+
+
+        <record id="is_google_agenda_temps_prevu_pivot" model="ir.ui.view">
+            <field name="name">is_google_agenda_temps_prevu_pivot</field>
+            <field name="model">is.google.agenda</field>
+            <field name="arch" type="xml">
+                <pivot>
+                    <field name="date_debut" type="row" interval="day"/>
+                    <field name="user_id"    type="col"/>
+                    <field name="duree"      type="measure"/>
+                </pivot>
+            </field>
+        </record>
+        <record  id="is_google_agenda_temps_prevu_action" model="ir.actions.act_window">
+            <field name="name">Temps prévu par jour et par consultant</field>
+            <field name="res_model">is.google.agenda</field>
+            <field name="view_mode">pivot,list,form</field>
+            <field name="view_id" ref="is_google_agenda_temps_prevu_pivot"/>
+            <field name="domain">[('temps_disponible','=',False)]</field>
+            <field name="limit">200</field>
+        </record>
+
+        <record id="is_google_agenda_temps_dispo_pivot" model="ir.ui.view">
+            <field name="name">is_google_agenda_temps_dispo_pivot</field>
+            <field name="model">is.google.agenda</field>
+            <field name="arch" type="xml">
+                <pivot>
+                    <field name="date_debut" type="row" interval="day"/>
+                    <field name="user_id"    type="col"/>
+                    <field name="duree"      type="measure"/>
+                </pivot>
+            </field>
+        </record>
+        <record  id="is_google_agenda_temps_dispo_action" model="ir.actions.act_window">
+            <field name="name">Temps disponible par jour et par consultant</field>
+            <field name="res_model">is.google.agenda</field>
+            <field name="view_mode">pivot,list,form</field>
+            <field name="view_id" ref="is_google_agenda_temps_dispo_pivot"/>
+            <field name="domain">[('temps_disponible','=',True)]</field>
+            <field name="limit">200</field>
+        </record>
+
+        <!-- Recalul la nuit -->
+        <record id="is_google_agenda_cron" model="ir.cron">
+            <field name="name">Actualisation Google Agenda</field>
+            <field name="model_id" ref="model_is_google_agenda"/>
+            <field name="state">code</field>
+            <field name="code">model.actualiser_action()</field>
+            <field name='interval_number'>1</field>
+            <field name='interval_type'>days</field>
+            <field name="numbercall">-1</field>
+        </record>
+
+
+
+
+
+        <!-- is.google.agenda.categorie -->
+        <record id="is_google_agenda_categorie_form" model="ir.ui.view">
+            <field name="name">is.google.agenda.categorie.form</field>
+            <field name="model">is.google.agenda.categorie</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                     </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="is_google_agenda_categorie_tree" model="ir.ui.view">
+            <field name="name">is.google.agenda.categorie.tree</field>
+            <field name="model">is.google.agenda.categorie</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="is_google_agenda_categorie_search" model="ir.ui.view">
+            <field name="name">is.google.agenda.categorie.search</field>
+            <field name="model">is.google.agenda.categorie</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+               </search>
+            </field>
+        </record>
+        <record  id="is_google_agenda_categorie_action" model="ir.actions.act_window">
+            <field name="name">Catégorie Google Agenda</field>
+            <field name="res_model">is.google.agenda.categorie</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+
+
+
+    </data>
+</openerp>
