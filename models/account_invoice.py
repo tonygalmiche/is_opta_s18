@@ -1,6 +1,42 @@
 # -*- coding: utf-8 -*-
-from odoo import api, fields, models, _       # type: ignore
-from odoo.exceptions import ValidationError   # type: ignore
+from odoo import api, fields, models, _                         # type: ignore
+from odoo.exceptions import ValidationError,UserError           # type: ignore
+from odoo.addons.account.models.chart_template import template  # type: ignore
+
+
+# class AccountChartTemplate(models.AbstractModel):
+#     _inherit = 'account.chart.template'
+
+#     @template('fr')
+#     def _get_fr_template_data(self):
+#         print('TEST',self)
+#         return {
+#             'code_digits': 6,
+#             'property_account_receivable_id': 'fr_pcg_recv',
+#             'property_account_payable_id': 'fr_pcg_pay',
+#             'property_account_expense_categ_id': 'pcg_607_account',
+#             'property_account_income_categ_id': 'pcg_707_account',
+#             'property_account_downpayment_categ_id': 'pcg_4191',
+#         }
+
+
+# class AccountPayment(models.Model):
+#     _inherit = "account.payment"
+   
+#     def _get_outstanding_account(self, payment_type):
+#         #return self.company_id.transfer_account_id
+#         account_ref = 'account_journal_payment_debit_account_id' if payment_type == 'inbound' else 'account_journal_payment_credit_account_id'
+#         print('TEST 1', self,payment_type,account_ref)
+#         chart_template = self.with_context(allowed_company_ids=self.company_id.root_id.ids).env['account.chart.template']
+#         print('TEST 2', account_ref, chart_template.ref(account_ref, raise_if_not_found=False))
+#         outstanding_account = (
+#             chart_template.ref(account_ref, raise_if_not_found=False)
+#             or self.company_id.transfer_account_id
+#         )
+#         if not outstanding_account:
+#             raise UserError(_("No outstanding account could be found to make the payment"))
+#         print('TEST 3', self,payment_type,outstanding_account)
+#         return outstanding_account
 
 
 def f0(number):
@@ -29,6 +65,7 @@ class AccountInvoiceLine(models.Model):
     is_activite_id        = fields.Many2one('is.activite', 'Activité')
     is_frais_id           = fields.Many2one('is.frais', 'Frais')
     is_frais_ligne_id     = fields.Many2one('is.frais.lignes', 'Ligne de frais')
+    is_account_invoice_line_id = fields.Integer('Lien entre account_invoice_line et account_move_line pour la migration', index=True)
 
 
     def uptate_onchange_product_id(self):
@@ -68,6 +105,9 @@ class AccountInvoice(models.Model):
     is_code_service         = fields.Char(u"Code service")
     is_ref_engagement       = fields.Char(u"Réf engagement")
     is_frais_commentaire    = fields.Char("Facturation des frais", compute='_is_frais_commentaire', readonly=True, store=False)
+
+
+
 
 
     def _is_frais_commentaire(self):

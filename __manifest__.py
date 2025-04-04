@@ -14,6 +14,7 @@ InfoSaône - Module Odoo 18 pour Opta-S / SGP
         'base',
         'account',
         'l10n_fr',
+        'l10n_fr_account',
         'mail',
     ],
     'data' : [
