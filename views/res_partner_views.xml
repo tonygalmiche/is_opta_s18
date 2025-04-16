@@ -25,9 +25,9 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_tree"/>
         <field name="arch" type="xml">
-            <field name="complete_name" position="replace">
+            <!-- <field name="complete_name" position="replace">
                 <field name="name"/>
-            </field>
+            </field> -->
             <field name="email" position="after">
                 <field name="is_type_societe_id"              optional="show"/>
                 <field name="is_evaluation"                   optional="show"/>

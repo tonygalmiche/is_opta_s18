@@ -114,6 +114,7 @@ class IsAffaireForfaitJour(models.Model):
 class IsAffaireIntervenant(models.Model):
     _name = 'is.affaire.intervenant'
     _description = "Intervenants liés à l'affaire"
+    _rec_name = 'intervenant_id'
 
     @api.depends('intervenant_id')
     def _compute(self):
@@ -129,21 +130,21 @@ class IsAffaireIntervenant(models.Model):
         ], "Type d'intervenant", compute='_compute', readonly=True, store=True)
     commentaire   = fields.Char("Commentaire")
 
-    def name_get(self):
-        result = []
-        for obj in self:
-            name=str(obj.intervenant_id.name)
-            result.append((obj.id, name))
-        return result
+    # def name_get(self):
+    #     result = []
+    #     for obj in self:
+    #         name=str(obj.intervenant_id.name)
+    #         result.append((obj.id, name))
+    #     return result
 
-    @api.model
-    def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
-        args = args or []
-        if name:
-            ids = self._search([('intervenant_id.name', 'ilike', name)] + args, limit=limit, access_rights_uid=name_get_uid)
-        else:
-            ids = self._search(args, limit=limit, access_rights_uid=name_get_uid)
-        return self.browse(ids).name_get()
+    # @api.model
+    # def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
+    #     args = args or []
+    #     if name:
+    #         ids = self._search([('intervenant_id.name', 'ilike', name)] + args, limit=limit, access_rights_uid=name_get_uid)
+    #     else:
+    #         ids = self._search(args, limit=limit, access_rights_uid=name_get_uid)
+    #     return self.browse(ids).name_get()
 
 
 class IsAffairePhase(models.Model):

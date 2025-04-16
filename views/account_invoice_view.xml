@@ -115,8 +115,8 @@
                     <field name="is_prix_unitaire"/>
                 </field>
                 <xpath expr="//page[@name='invoice_tab']/field[@name='invoice_line_ids']/list/field[@name='name']" position="after">
-                    <field name="is_dates_intervention"/>
-                    <field name="is_activite_id" invisible="1"/>
+                    <field name="is_dates_intervention"  optional="show"/>
+                    <field name="is_activite_id"         optional="hide" class="min30rem"/>
                 </xpath>
                 <xpath expr="//page[@name='invoice_tab']/field[@name='invoice_line_ids']/list/field[@name='discount']" position="replace">
                     <field name="discount" invisible="1"/>
@@ -140,7 +140,7 @@
                             context="{'tree_view_ref': 'is_opta_s18.is_activite_invoice_tree'}"
                         > 
                             <list>
-                                <button string="Activité" name="acceder_activite_action" type="object" icon="fa-search-plus"/>
+                                <button title="Activité" name="acceder_activite_action" type="object" icon="fa-search-plus"/>
                                 <field name="phase_activite_id" />
                                 <field name="nature_activite"/>
                                 <field name="dates_intervention"/>

@@ -5,15 +5,7 @@ from odoo.addons.account.models.chart_template import template  # type: ignore
 
 
 #TODO : 
-#- Champ 'complete_name dans res_partner est vide
-#- Nouveau champ is_activite rec_name à initialiser lors de la migration
-#- Manque les activité sur la factures (ex : 2025-00092)
-#- Manque les données du champ is_createur_id
-#- Statut => Pourquoi le 'Non payé' n'est pas rouge
-
-
 #- Le menu 'Export Cegid' est utilsé unoquement par 'Nouvelle trajecoire'
-#- Interface pour la saisie simplifiée du temps' ne fonctionne pas
 
 
 def f0(number):
@@ -55,28 +47,13 @@ class AccountInvoiceLine(models.Model):
 class AccountInvoice(models.Model):
     _inherit = "account.move"
 
-    # state = fields.Selection([
-    #         ('draft','Draft'),
-    #         ('diffuse','Diffusé'),
-    #         ('open', 'Open'),
-    #         ('in_payment', 'In Payment'),
-    #         ('paid', 'Paid'),
-    #         ('cancel', 'Cancelled'),
-    #     ], string='État', index=True, readonly=True, default='draft',
-    #     track_visibility='onchange', copy=False)
-
-
     state = fields.Selection(
         selection_add=[
             ('diffuse','Diffusé'),
         ], ondelete={'diffuse': 'set default'}
     )
-
-
-
     is_createur_id = fields.Many2one('res.users', string='Créateur', readonly=True,
         default=lambda self: self.env.user, copy=False) #, track_visibility='onchange', states={'draft': [('readonly', False)]},
-
     is_affaire_id           = fields.Many2one('is.affaire', u'Affaire')
     is_activites            = fields.Many2many('is.activite', 'is_account_invoice_activite_rel', 'invoice_id', 'activite_id')
     is_detail_activite      = fields.Boolean(u'Afficher le détail des activités',default=True)

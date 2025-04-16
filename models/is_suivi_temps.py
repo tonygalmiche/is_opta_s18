@@ -25,6 +25,9 @@ class IsSuiviTempsSimplifieWizard(models.TransientModel):
             jour = date_semaine.weekday()
             date_semaine = date_semaine - datetime.timedelta(days=jour) 
             affaires = self.env['is.affaire'].search([('state', '=', 'affaire_gagnee')])
+
+
+
             ids=[]
             for affaire in affaires:
                 intervenants = affaire.intervenant_ids
@@ -46,6 +49,10 @@ class IsSuiviTempsSimplifieWizard(models.TransientModel):
                                     }
                                     suivi = self.env['is.suivi.temps'].create(vals)
                                 ids.append(suivi.id)
+
+            print(ids)
+
+
             if ids:
                 return {
                     'name': u'Suivi du temps '+obj.intervenant_id.name,
