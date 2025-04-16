@@ -13,14 +13,14 @@
         <field name="name">is.affaire.form</field>
         <field name="model">is.affaire</field>
         <field name="arch" type="xml">
-            <form>
+            <form style="background-color:red">
                 <style>
                     .o_form_view .o_form_sheet_bg > .o_form_sheet{
                         max-width: 1800px;
                     }
-                    .o_form_label{
+                    <!-- .o_form_label{
                         white-space: nowrap;
-                    }
+                    } -->
                 </style>
                 <header>
                     <button
@@ -78,7 +78,7 @@
                         statusbar_visible="offre_en_cours,affaire_gagnee,affaire_soldee" 
                     />
                 </header>
-                <sheet>
+                <sheet class="width1800px">
                     <group>
                         <field name="code_long"/>
                         <field name="nature_affaire"/>
@@ -334,18 +334,23 @@
         <field name="model">is.affaire</field>
         <field name="arch" type="xml">
             <list>
-                <field name="code_long"/>
-                <field name="nature_affaire"/>
-                <field name="partner_id"/>
-                <field name="type_offre_id"/>
-                <field name="secteur_id"/>
-                <field name="date_creation"/>
-                <field name="createur_id"/>
-                <field name="responsable_id"/>
-                <field name="ca_previsionnel"/>
-                <field name="total_facture_ht"/>
-                <field name="state"/>
-                <field name="is_dynacase_ids" widget="many2many_tags" groups="base.group_system"/>
+                <field name="code_long" optional="show"/>
+                <field name="nature_affaire"   optional="show" class="min30rem"/>
+                <field name="partner_id"       optional="show" widget="many2one_clickable"/>
+                <field name="type_offre_id"    optional="show"/>
+                <field name="secteur_id"       optional="show"/>
+                <field name="date_creation"    optional="show"/>
+                <field name="createur_id"      optional="show" widget="many2one_avatar_user" />
+                <field name="responsable_id"   optional="show" widget="many2one_avatar_user" />
+                <field name="ca_previsionnel"  optional="show" sum="Total"/>
+                <field name="total_facture_ht" optional="show" sum="Total"/>
+                <field 
+                    name="state" widget="badge" 
+                    decoration-warning="state=='offre_en_cours'" 
+                    decoration-success="state=='affaire_gagnee'" 
+                    optional="show"
+                    string="Etat"
+                />
             </list>
         </field>
     </record>

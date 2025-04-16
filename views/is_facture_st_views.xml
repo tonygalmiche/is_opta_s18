@@ -30,13 +30,13 @@
             <list>
                 <field name="name"/>
                 <field name="sous_traitant_id"/>
-                <field name="date_facture"/>
-                <field name="description"/>
-                <field name="montant_ht" sum="Total"/>
-                <field name="frais"      sum="Total"/>
-                <field name="client_id"/>
-                <field name="affaire_id"/>
-                <field name="activite_id"/>
+                <field name="date_facture" optional="show"/>
+                <field name="description"  optional="show" class="max40rem"/>
+                <field name="montant_ht"   optional="show" sum="Total"/>
+                <field name="frais"        optional="show" sum="Total"/>
+                <field name="client_id"    optional="show" class="min30rem"/>
+                <field name="affaire_id"   optional="show" class="min30rem"/>
+                <field name="activite_id"  optional="show" class="min30rem"/>
             </list>
         </field>
     </record>

@@ -147,13 +147,13 @@
         parent="is_crm_main_menu"
         sequence="80"
     />
-    <!-- <menuitem
+    <menuitem
         id="is_account_invoice_menu"
         name="Factures"
         parent="is_crm_facture_menu"
         sequence="10"
-        action="is_account_invoice_action"
-    /> -->
+        action="account.action_move_out_invoice_type"
+    />
 
 
     <menuitem
@@ -196,39 +196,6 @@
         sequence="86"
         action="is_partenaire_action"
     /> 
-
-
-
-    <!-- Google Agenda -->
-    <!-- <record id="is_google_agenda_main_menu" model="ir.ui.menu" >
-        <field name="name">Google Agenda</field>
-        <field name="sequence">87</field>
-        <field name="parent_id" eval="ref('is_crm_main_menu')"/>
-        <field name="groups_id" eval="[(6,0,[
-        ])]"/>
-    </record>
-    <menuitem
-        id="is_google_agenda_temps_prevu_menu"
-        name="Temps prévu par jour et par consultant"
-        parent="is_google_agenda_main_menu"
-        sequence="10"
-        action="is_google_agenda_temps_prevu_action"
-    />
-    <menuitem
-        id="is_google_agenda_temps_dispo_menu"
-        name="Temps disponible par jour et par consultant"
-        parent="is_google_agenda_main_menu"
-        sequence="20"
-        action="is_google_agenda_temps_dispo_action"
-    />
-    <menuitem
-        id="is_google_agenda_categorie_menu"
-        name="Catégories"
-        parent="is_google_agenda_main_menu"
-        sequence="30"
-        action="is_google_agenda_categorie_action"
-    /> -->
-
 
     <!-- Tables -->
     <record id="is_crm_table_menu" model="ir.ui.menu" >
@@ -297,20 +264,20 @@
     />
 
 
-    <!-- <menuitem
+    <menuitem
         id="is_account_account_menu"
         name="Plan comptable"
         parent="is_crm_table_menu"
         sequence="72"
         action="is_account_account_action"
-    /> -->
-    <!-- <menuitem
+    />
+    <menuitem
         id="is_account_fiscal_position_menu"
         name="Positions fiscales"
         parent="is_crm_table_menu"
         sequence="74"
         action="is_account_fiscal_position_action"
-    /> -->
+    />
 
     <record id="is_crm_indicateur_menu" model="ir.ui.menu" >
         <field name="name">Indicateurs</field>

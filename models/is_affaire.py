@@ -276,6 +276,8 @@ class IsAffaire(models.Model):
     _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin']
     _description = "Affaire"
     _order = 'date_creation desc'
+    _rec_name = 'rec_name'
+
 
     @api.depends('date_creation')
     def _compute(self):
@@ -397,24 +399,35 @@ class IsAffaire(models.Model):
     reste_encaissement = fields.Float('Reste à encaisser' , digits=(14,2), compute='_compute_total_facure', readonly=True, store=False)
     is_dynacase_ids    = fields.Many2many('is.dynacase', 'is_affaire_dynacase_rel', 'doc_id', 'dynacase_id', 'Ids Dynacase', readonly=True)
     active             = fields.Boolean("Affaire active", default=True)
+    rec_name           = fields.Char("Nom de l'activité", compute='_compute_rec_name', readonly=True, store=True)
 
 
-    def name_get(self):
-        result = []
+
+    @api.depends('code_long','nature_affaire','partner_id.name')
+    def _compute_rec_name(self):
         for obj in self:
-            result.append((obj.id, '['+str(obj.code_long)+'] '+str(obj.nature_affaire)+' ('+obj.partner_id.name+')'))
-        return result
+            name="[%s] %s (%s)"%(obj.code_long,obj.nature_affaire,obj.partner_id.name)
+            obj.rec_name = name
 
 
-    @api.model
-    def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
-        args = args or []
-        ids = []
-        if name:
-            ids = self._search(['|','|',('code_long', 'ilike', name),('nature_affaire', 'ilike', name),('partner_id.name', 'ilike', name)] + args, limit=limit, access_rights_uid=name_get_uid)
-        else:
-            ids = self._search(args, limit=limit, access_rights_uid=name_get_uid)
-        return self.browse(ids).name_get()
+
+
+    # def name_get(self):
+    #     result = []
+    #     for obj in self:
+    #         result.append((obj.id, '['+str(obj.code_long)+'] '+str(obj.nature_affaire)+' ('+obj.partner_id.name+')'))
+    #     return result
+
+
+    # @api.model
+    # def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
+    #     args = args or []
+    #     ids = []
+    #     if name:
+    #         ids = self._search(['|','|',('code_long', 'ilike', name),('nature_affaire', 'ilike', name),('partner_id.name', 'ilike', name)] + args, limit=limit, access_rights_uid=name_get_uid)
+    #     else:
+    #         ids = self._search(args, limit=limit, access_rights_uid=name_get_uid)
+    #     return self.browse(ids).name_get()
 
 
     # @api.model
@@ -441,7 +454,7 @@ class IsAffaire(models.Model):
                 'body_html'     : subject, 
                 'model'         : self._name,
                 'res_id'        : obj.id,
-                'notification'  : True,
+                # 'notification'  : True,
                 'message_type'  : 'comment',
             }
             email=self.env['mail.mail'].create(vals)
@@ -515,12 +528,12 @@ class IsAffaire(models.Model):
                 'view_type': 'form',
                 'res_model': 'account.move',
                 'type': 'ir.actions.act_window',
-                'view_id': self.env.ref('account.invoice_form').id,
+                'view_id': self.env.ref('account.view_move_form').id,
                 'domain': [('type','=','out_invoice')],
                 'context': {
                     'default_partner_id': partner_id,
                     'default_is_affaire_id': obj.id,
-                    'default_type'         : 'out_invoice',
+                    'default_invoice_type' : 'out_invoice',
                     'default_journal_type' : 'sale',
                 }
             }

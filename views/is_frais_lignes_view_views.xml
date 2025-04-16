@@ -44,18 +44,38 @@
             <list>
                 <field name="chrono_long"/>
                 <field name="date_creation"/>
-                <field name="affaire_id"/>
-                <field name="activite_id"/>
-                <field name="type_activite"/>
-                <field name="state"/>
-                <field name="partner_id"/>
-                <field name="product_id"/>
-                <field name="effectuee_par_id"/>
-                <field name="montant_ttc" sum="Total"/>
-                <field name="montant_tva" sum="Total"/>
-                <field name="refacturable"/>
-                <field name="commentaire"/>
-                <field name="justificatif_joint"/>
+                <field name="affaire_id"         optional="show" class="min30rem"/>
+                <field name="activite_id"        optional="show" class="min30rem"/>
+                <field 
+                    name="type_activite" widget="badge" 
+                    decoration-danger="type_activite=='divers'" 
+                    decoration-warning="type_activite=='conseil'" 
+                    decoration-info="type_activite=='formation'" 
+                    optional="show"
+                />
+                <field 
+                    name="state" widget="badge" 
+                    decoration-danger="state=='brouillon'" 
+                    decoration-warning="state=='diffuse'" 
+                    decoration-success="state=='valide'" 
+                    optional="show"
+                />                
+                <field name="partner_id"         optional="show" widget="many2one_clickable"/>
+                <field name="product_id"         optional="show" />
+                <field name="effectuee_par_id"   optional="show" />
+                <field name="montant_ttc"        optional="show"  sum="Total"/>
+                <field name="montant_tva"        optional="show"  sum="Total"/>
+                <field 
+                    name="refacturable" widget="badge" 
+                    decoration-warning="refacturable=='oui'" 
+                    optional="show"
+                />
+                <field name="commentaire"        optional="hide" />
+                <field 
+                    name="justificatif_joint" widget="badge" 
+                    decoration-info="justificatif_joint=='oui'" 
+                    optional="show"
+                />
             </list>
         </field>
     </record>

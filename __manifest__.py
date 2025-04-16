@@ -16,6 +16,7 @@ InfoSaône - Module Odoo 18 pour Opta-S / SGP
         'l10n_fr',
         'l10n_fr_account',
         'mail',
+        'web_chatter_position',
     ],
     'data' : [
         'security/res.groups.xml',
@@ -31,7 +32,7 @@ InfoSaône - Module Odoo 18 pour Opta-S / SGP
         'views/is_suivi_temps_views.xml',
         'views/is_frais_views.xml',
         'views/is_frais_lignes_view_views.xml',
-        # 'views/account_invoice_view.xml',
+        'views/account_invoice_view.xml',
         'views/is_activite_suivi_temps_views.xml',
         'views/is_export_compta_view.xml',
         'views/is_export_compta_ana_view.xml',
@@ -44,6 +45,14 @@ InfoSaône - Module Odoo 18 pour Opta-S / SGP
         # 'report/report_templates.xml',
         # 'report/report_invoice.xml',
     ],
+    "assets": {
+        'web.assets_backend': [
+            'is_opta_s18/static/src/**/*',
+         ],
+        # 'web.report_assets_common': [
+        #     'is_plastigray16/static/src/scss/plastigray_report.scss',
+        # ]
+    },
     'license': 'AGPL-3',
     'installable': True,
     'application': True,

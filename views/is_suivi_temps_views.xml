@@ -109,20 +109,30 @@
         <field name="model">is.suivi.temps</field>
         <field name="arch" type="xml">
             <list editable="top">
-                <field name="activite_id"/>
+                <field name="activite_id" class="min30rem"/>
                 <field name="intervenant_product_id"/>
-                <field name="type_activite"/>
-                <field name="date_activite"/>
-                <field name="nb_stagiaires"                            sum="Total"/>
-                <field name="nb_heures"            widget="float_time" sum="Total"/>
-                <field name="realise_st"/>
-                <field name="a_distance"/>
-                <field name="aller_heure_depart"   widget="float_time"/>
-                <field name="aller_heure_arrivee"  widget="float_time"/>
-                <field name="retour_heure_depart"  widget="float_time"/>
-                <field name="retour_heure_arrivee" widget="float_time"/>
-                <field name="temps_deplacement"    widget="float_time" sum="Total"/>
-                <field name="detail_activite"/>
+                <field 
+                    name="type_activite" widget="badge" 
+                    decoration-info="type_activite=='formation'" 
+                    decoration-warning="type_activite=='conseil'" 
+                    decoration-danger="type_activite=='audit'" 
+                    optional="show"
+                />
+                <field name="date_activite" optional="show"/>
+                <field name="nb_stagiaires" optional="show" sum="Total"/>
+                <field name="nb_heures"     optional="show" widget="float_time" sum="Total"/>
+                <field 
+                    name="realise_st" widget="badge" 
+                    decoration-info="realise_st=='oui'" 
+                    optional="show"
+                />
+                <field name="a_distance"           optional="show"/>
+                <field name="aller_heure_depart"   optional="show" widget="float_time"/>
+                <field name="aller_heure_arrivee"  optional="show" widget="float_time"/>
+                <field name="retour_heure_depart"  optional="show" widget="float_time"/>
+                <field name="retour_heure_arrivee" optional="show" widget="float_time"/>
+                <field name="temps_deplacement"    optional="show" widget="float_time" sum="Total"/>
+                <field name="detail_activite"      optional="show"/>
             </list>
         </field>
     </record>
@@ -141,8 +151,8 @@
         <field name="arch" type="xml">
             <list editable="top">
                 <field name="type_activite" readonly="1"/>
-                <field name="activite_id"/>
-                <field name="affaire_id"/>
+                <field name="activite_id" class="min30rem"/>
+                <field name="affaire_id"  class="min30rem"/>
                 <field name="intervenant_product_id"/>
                 <field name="date_activite"/>
                 <field name="nb_stagiaires" sum="Total"/>
@@ -175,7 +185,7 @@
         <field name="arch" type="xml">
             <list editable="top">
                 <field name="type_activite" readonly="1"/>
-                <field name="activite_id"/>
+                <field name="activite_id" class="min30rem"/>
                 <field name="intervenant_product_id"/>
                 <field name="date_activite"/>
                 <field name="nb_heures"            widget="float_time" sum="Total"/>
@@ -184,7 +194,7 @@
                 <field name="retour_heure_depart"  widget="float_time"/>
                 <field name="retour_heure_arrivee" widget="float_time"/>
                 <field name="temps_deplacement"    widget="float_time" sum="Total"/>
-                <field name="detail_activite" required="1"/>
+                <field name="detail_activite" required="1" class="max40rem"/>
             </list>
         </field>
     </record>
@@ -204,8 +214,8 @@
         <field name="model">is.suivi.temps</field>
         <field name="arch" type="xml">
             <list editable="top">
-                <field name="affaire_id"    readonly="1"/>
-                <field name="activite_id"   readonly="1"/>
+                <field name="affaire_id"    readonly="1" class="min30rem"/>
+                <field name="activite_id"   readonly="1" class="min30rem"/>
                 <field name="type_activite"/>
                 <field name="date_activite" readonly="1" string="Lundi de la semaine"/>
                 <field name="nb_heures"         widget="float_time" sum="Total" string="Temps passé dans la semaine"/>

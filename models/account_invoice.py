@@ -4,39 +4,16 @@ from odoo.exceptions import ValidationError,UserError           # type: ignore
 from odoo.addons.account.models.chart_template import template  # type: ignore
 
 
-# class AccountChartTemplate(models.AbstractModel):
-#     _inherit = 'account.chart.template'
-
-#     @template('fr')
-#     def _get_fr_template_data(self):
-#         print('TEST',self)
-#         return {
-#             'code_digits': 6,
-#             'property_account_receivable_id': 'fr_pcg_recv',
-#             'property_account_payable_id': 'fr_pcg_pay',
-#             'property_account_expense_categ_id': 'pcg_607_account',
-#             'property_account_income_categ_id': 'pcg_707_account',
-#             'property_account_downpayment_categ_id': 'pcg_4191',
-#         }
+#TODO : 
+#- Champ 'complete_name dans res_partner est vide
+#- Nouveau champ is_activite rec_name à initialiser lors de la migration
+#- Manque les activité sur la factures (ex : 2025-00092)
+#- Manque les données du champ is_createur_id
+#- Statut => Pourquoi le 'Non payé' n'est pas rouge
 
 
-# class AccountPayment(models.Model):
-#     _inherit = "account.payment"
-   
-#     def _get_outstanding_account(self, payment_type):
-#         #return self.company_id.transfer_account_id
-#         account_ref = 'account_journal_payment_debit_account_id' if payment_type == 'inbound' else 'account_journal_payment_credit_account_id'
-#         print('TEST 1', self,payment_type,account_ref)
-#         chart_template = self.with_context(allowed_company_ids=self.company_id.root_id.ids).env['account.chart.template']
-#         print('TEST 2', account_ref, chart_template.ref(account_ref, raise_if_not_found=False))
-#         outstanding_account = (
-#             chart_template.ref(account_ref, raise_if_not_found=False)
-#             or self.company_id.transfer_account_id
-#         )
-#         if not outstanding_account:
-#             raise UserError(_("No outstanding account could be found to make the payment"))
-#         print('TEST 3', self,payment_type,outstanding_account)
-#         return outstanding_account
+#- Le menu 'Export Cegid' est utilsé unoquement par 'Nouvelle trajecoire'
+#- Interface pour la saisie simplifiée du temps' ne fonctionne pas
 
 
 def f0(number):
@@ -89,6 +66,14 @@ class AccountInvoice(models.Model):
     #     track_visibility='onchange', copy=False)
 
 
+    state = fields.Selection(
+        selection_add=[
+            ('diffuse','Diffusé'),
+        ], ondelete={'diffuse': 'set default'}
+    )
+
+
+
     is_createur_id = fields.Many2one('res.users', string='Créateur', readonly=True,
         default=lambda self: self.env.user, copy=False) #, track_visibility='onchange', states={'draft': [('readonly', False)]},
 
@@ -105,9 +90,6 @@ class AccountInvoice(models.Model):
     is_code_service         = fields.Char(u"Code service")
     is_ref_engagement       = fields.Char(u"Réf engagement")
     is_frais_commentaire    = fields.Char("Facturation des frais", compute='_is_frais_commentaire', readonly=True, store=False)
-
-
-
 
 
     def _is_frais_commentaire(self):
@@ -184,7 +166,7 @@ class AccountInvoice(models.Model):
                 <p>"""+nom+""" vient de passer la facture du client <a href='"""+url+"""'>"""+obj.partner_id.name+"""</a> à l'état 'Diffusé'.</p>
                 <p>Merci d'en prendre connaissance.</p>
             """
-            self.envoi_mail(email_from,email_to,subject,body_html)
+            #self.envoi_mail(email_from,email_to,subject,body_html)
             obj.state='diffuse'
 
 
@@ -281,7 +263,7 @@ class AccountInvoice(models.Model):
                             line.quantity   = 1
                             line.price_unit = ligne.montant_ttc
                             is_frais+=ligne.montant_ttc
-            obj.compute_taxes()
+            #obj.compute_taxes()
             obj.is_frais=is_frais
             return True
 

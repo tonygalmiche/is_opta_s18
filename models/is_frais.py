@@ -161,7 +161,7 @@ class IsFrais(models.Model):
                 'body_html'     : body_html, 
                 'model'         : self._name,
                 'res_id'        : obj.id,
-                'notification'  : True,
+                # 'notification'  : True,
                 'message_type'  : 'comment',
             }
             email=self.env['mail.mail'].create(vals)
@@ -177,7 +177,7 @@ class IsFrais(models.Model):
                 'body_html'     : subject, 
                 'model'         : self._name,
                 'res_id'        : obj.id,
-                'notification'  : True,
+                #'notification'  : True,
                 'message_type'  : 'comment',
             }
             email=self.env['mail.mail'].create(vals)

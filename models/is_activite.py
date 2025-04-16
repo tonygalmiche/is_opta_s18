@@ -8,6 +8,8 @@ class IsActivite(models.Model):
     _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin']
     _description = "Activité"
     _order = 'date_debut desc'
+    _rec_name = 'rec_name'
+    #_rec_names_search = ['name', 'bic']
 
 
     @api.depends('tarification_id','nb_facturable')
@@ -89,7 +91,6 @@ class IsActivite(models.Model):
             act.jours_realises=jours_realises
 
 
-
     def get_nb_realise_auto(self,act):
         nb_realise_auto=0
         unite = act.tarification_id.unite
@@ -163,6 +164,15 @@ class IsActivite(models.Model):
         ], u"État", index=True, default='brouillon')
     is_dynacase_ids = fields.Many2many('is.dynacase', 'is_activite_dynacase_rel', 'doc_id', 'dynacase_id', 'Ids Dynacase', readonly=True)
     active          = fields.Boolean("Activité active", default=True)
+    rec_name       = fields.Char("Nom de l'activité", compute='_compute_rec_name', readonly=True, store=True)
+
+
+
+    @api.depends('affaire_id.code_long','nature_activite')
+    def _compute_rec_name(self):
+        for obj in self:
+            name="[%s] %s"%(obj.affaire_id.code_long,obj.nature_activite)
+            obj.rec_name = name
 
 
     def write(self,vals):
@@ -196,24 +206,6 @@ class IsActivite(models.Model):
         return res
 
 
-    def name_get(self):
-        result = []
-        for obj in self:
-            result.append((obj.id, '['+str(obj.affaire_id.name)+'] '+str(obj.nature_activite)))
-        return result
-
-
-    @api.model
-    def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
-        args = args or []
-        ids = []
-        if name:
-            ids = self._search(['|',('affaire_id.name', 'ilike', name),('nature_activite', 'ilike', name)] + args, limit=limit, access_rights_uid=name_get_uid)
-        else:
-            ids = self._search(args, limit=limit, access_rights_uid=name_get_uid)
-        return self.browse(ids).name_get()
-
-
     def envoi_mail(self, email_from,email_to,subject,body_html):
         for obj in self:
             vals={
@@ -224,7 +216,7 @@ class IsActivite(models.Model):
                 'body_html'     : body_html, 
                 'model'         : self._name,
                 'res_id'        : obj.id,
-                'notification'  : True,
+                # 'notification'  : True,
                 'message_type'  : 'comment',
             }
             email=self.env['mail.mail'].create(vals)
@@ -250,7 +242,7 @@ class IsActivite(models.Model):
                 body_html=u"""
                     <p>Bonjour,</p>
                     <p>"""+nom+""" vient de passer l'activité <a href='"""+url+"""'>"""+obj.nature_activite+"""</a> à l'état 'Diffusé'.</p>
-                    <p>Affaire : <a href='"""+url_affaire+"""'>"""+obj.affaire_id.name_get()[0][1]+"""</a>.</p>
+                    <p>Affaire : <a href='"""+url_affaire+"""'>"""+obj.affaire_id.rec_name+"""</a>.</p>
                     <p>Merci d'en prendre connaissance.</p>
                 """
                 self.envoi_mail(email_from,email_to,subject,body_html)

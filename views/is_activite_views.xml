@@ -11,9 +11,6 @@
                     .o_form_view .o_form_sheet_bg > .o_form_sheet{
                         max-width: 1800px;
                     }
-                    .o_form_label{
-                        white-space: nowrap;
-                    }
                 </style>
                 <header>
                     <button
@@ -228,27 +225,30 @@
         <field name="model">is.activite</field>
         <field name="arch" type="xml">
             <list>
-                <field name="affaire_id"/>
-                <field name="responsable_id"/>
-                <field name="partner_id"/>
-                <field name="phase_activite_id"/>
-                <field name="nature_activite"/>
-                <field name="date_debut"/>
-                <field name="dates_intervention"/>
-                <field name="intervenant_product_id"/>
-                <field name="tarification_id"/>
-                <field name="nb_realise"       sum="Total"/>
-                <field name="nb_facturable"    sum="Total"/>
-                <field name="total_facturable" sum="Total"/>
-                <field name="jours_consommes"  sum="Total"/>
-                <field name="state"/>
-                <field name="invoice_id"/>
-                <field name="is_dynacase_ids" widget="many2many_tags" groups="base.group_system"/>
+                <field name="affaire_id"             optional="show" class="min30rem"/>
+                <field name="responsable_id"         optional="show" widget="many2one_avatar_user" />
+                <field name="partner_id"             optional="show" widget="many2one_clickable"/>
+                <field name="phase_activite_id"      optional="show" class="min30rem"/>
+                <field name="nature_activite"        optional="show" class="min30rem"/>
+                <field name="date_debut"             optional="show"/>
+                <field name="dates_intervention"     optional="show"/>
+                <field name="intervenant_product_id" optional="show"/>
+                <field name="tarification_id"        optional="show"/>
+                <field name="nb_realise"             optional="show" sum="Total"/>
+                <field name="nb_facturable"          optional="show" sum="Total"/>
+                <field name="total_facturable"       optional="show" sum="Total"/>
+                <field name="jours_consommes"        optional="show" sum="Total"/>
+                <field 
+                    name="state" widget="badge" 
+                    decoration-danger="state=='brouillon'" 
+                    decoration-warning="state=='diffuse'" 
+                    decoration-success="state=='valide'" 
+                    optional="show"
+                />
+                <field name="invoice_id" optional="show" widget="many2one_clickable"/>
             </list>
         </field>
     </record>
-
-
     <record id="is_activite_invoice_tree" model="ir.ui.view">
         <field name="name">is_activite_invoice_tree</field>
         <field name="model">is.activite</field>

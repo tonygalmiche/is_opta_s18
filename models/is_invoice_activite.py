@@ -37,21 +37,26 @@ class IsInvoiceActivite(models.Model):
     def init(self):
         cr = self._cr
         tools.drop_view_if_exists(cr, 'is_invoice_activite')
+
+            #TODO : Utiliser les nouvzrax champs 'signed'
+
+            # CREATE OR REPLACE FUNCTION fsens(t text) RETURNS integer AS $$
+            # BEGIN
+            #     RETURN (
+            #         SELECT
+            #         CASE
+            #         WHEN t::text = ANY (ARRAY['out_refund'::character varying::text, 'in_refund'::character varying::text])
+            #             THEN -1::int
+            #             ELSE 1::int
+            #         END
+            #     );
+            # END;
+            # $$ LANGUAGE plpgsql;
+
+
+
+
         cr.execute("""
-
-
-            CREATE OR REPLACE FUNCTION fsens(t text) RETURNS integer AS $$
-            BEGIN
-                RETURN (
-                    SELECT
-                    CASE
-                    WHEN t::text = ANY (ARRAY['out_refund'::character varying::text, 'in_refund'::character varying::text])
-                        THEN -1::int
-                        ELSE 1::int
-                    END
-                );
-            END;
-            $$ LANGUAGE plpgsql;
 
 
 
