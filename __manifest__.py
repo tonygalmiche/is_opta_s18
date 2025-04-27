@@ -47,9 +47,9 @@ InfoSaône - Module Odoo 18 pour Opta-S / SGP
         'report/report_invoice.xml',
     ],
     "assets": {
-        # 'web.assets_backend': [
-        #     'is_opta_s18/static/src/**/*',
-        #  ],
+        'web.assets_backend': [
+            'is_opta_s18/static/src/**/*',
+         ],
         # 'web.report_assets_common': [
         #     'is_plastigray16/static/src/scss/plastigray_report.scss',
         # ]
