@@ -254,9 +254,9 @@ class AccountInvoice(models.Model):
                 html+='<td class="text-left">'+(line.is_activite_id.dates_intervention or '')+'</td>'
 
             if obj.is_prix_unitaire:
-                html+='<td class="text-right" style="white-space: nowrap">'+f2(line.quantity)+'</td>'
-                html+='<td class="text-right" style="white-space: nowrap">'+f2(line.price_unit)+' €</td>'
-            html+='<td class="text-right"     style="white-space: nowrap">'+f2(line.price_subtotal)+' €</td>'
+                html+='<td class="text-end" style="white-space: nowrap">'+f2(line.quantity)+'</td>'
+                html+='<td class="text-end" style="white-space: nowrap">'+f2(line.price_unit)+' €</td>'
+            html+='<td class="text-end"     style="white-space: nowrap">'+f2(line.price_subtotal)+' €</td>'
             html+='</tr>'
             return html
 
@@ -275,7 +275,7 @@ class AccountInvoice(models.Model):
                         montant+=line.price_subtotal
             html='<tr>'
             html+='<td class="text-left bg-100" colspan="'+str(colspan)+'">' +sous_phase.name+'</td>'
-            html+='<td class="text-right bg-100"">'+f2(montant)+' €</td>'
+            html+='<td class="text-end bg-100"">'+f2(montant)+' €</td>'
             html+='</tr>'
             return html
 
@@ -298,11 +298,11 @@ class AccountInvoice(models.Model):
             if obj.is_prix_unitaire:
                 colspan+=2
                 html+="""
-                                <th class="text-right"><span>Quantité</span></th>
-                                <th class="text-right"><span>Prix unitaire</span></th>
+                                <th class="text-end"><span>Quantité</span></th>
+                                <th class="text-end"><span>Prix unitaire</span></th>
             """
             html+="""
-                                <th class="text-right"><span>Montant HT</span></th>
+                                <th class="text-end"><span>Montant HT</span></th>
                             </tr>
                         </thead>
                         <tbody class="invoice_tbody">
