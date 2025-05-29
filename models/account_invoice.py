@@ -98,10 +98,10 @@ class AccountInvoice(models.Model):
                 'name': 'Facture',
                 'view_mode': 'form',
                 'view_type': 'form',
-                'res_model': 'account.invoice',
+                'res_model': 'account.move',
                 'res_id': obj.id,
                 'type': 'ir.actions.act_window',
-                'view_id': self.env.ref('account.invoice_form').id,
+                # 'view_id': self.env.ref('account.invoice_form').id,
                 'domain': [('type','=','out_invoice')],
             }
             return res

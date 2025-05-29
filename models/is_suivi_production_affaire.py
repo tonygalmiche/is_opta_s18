@@ -5,6 +5,7 @@ from odoo import models,fields  # type: ignore
 class IsSuiviProductionAffaire(models.Model):
     _description = "Suivi de production par affaire"
     _name = 'is.suivi.production.affaire'
+    _rec_name = 'date_debut'
 
 
     createur_id = fields.Many2one('res.users', "Créateur", default=lambda self: self.env.user, readonly=True)
@@ -18,11 +19,12 @@ class IsSuiviProductionAffaire(models.Model):
     line_ids = fields.One2many('is.suivi.production.affaire.line', 'suivi_id', u'Lignes')
 
 
-    def name_get(self):
-        result = []
-        for obj in self:
-            result.append((obj.id, str(obj.date_debut)))
-        return result
+    # TODO : name_get ne fonctionne plus avec Odoo 18, il faut créer un champ calculé rec_name
+    # def name_get(self):
+    #     result = []
+    #     for obj in self:
+    #         result.append((obj.id, str(obj.date_debut)))
+    #     return result
 
 
     def analyse_action(self):

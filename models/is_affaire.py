@@ -3,7 +3,6 @@ from odoo import api, fields, models, _      # type: ignore
 from odoo.exceptions import ValidationError  # type: ignore
 
 
-
 class IsTypeIntervention(models.Model):
     _name = 'is.type.intervention'
     _description = "Type d'intervention"
@@ -51,6 +50,8 @@ class IsAffaireVenduePar(models.Model):
 class IsAffaireTauxJournalier(models.Model):
     _name = 'is.affaire.taux.journalier'
     _description = "Affaire Taux Journalier"
+    _rec_name = 'rec_name'
+
 
     affaire_id  = fields.Many2one('is.affaire', 'Affaire', required=True, ondelete='cascade')
     unite       = fields.Selection([
@@ -61,16 +62,27 @@ class IsAffaireTauxJournalier(models.Model):
         ], "Unité",default='journee')
     montant = fields.Float("Montant intervention", digits=(14,2))
     commentaire = fields.Char("Commentaire")
+    rec_name = fields.Char("Nom du document", compute='_compute_rec_name', readonly=True, store=True)
 
 
-    def name_get(self):
-        result = []
+    @api.depends('montant','unite','commentaire')
+    def _compute_rec_name(self):
         for obj in self:
-            x=str(obj.montant) + '€ / ' + str(obj.unite)
+            name="%s€ / %s"%(obj.montant,obj.unite)
             if obj.commentaire:
-                x+=' - ' + str(obj.commentaire)
-            result.append((obj.id, x))
-        return result
+                name = '%s - %s'%(name,obj.commentaire)
+            obj.rec_name = name
+
+
+    # TODO : name_get ne fonctionne plus avec Odoo 18, il faut créer un champ calculé rec_name
+    # def name_get(self):
+    #     result = []
+    #     for obj in self:
+    #         x=str(obj.montant) + '€ / ' + str(obj.unite)
+    #         if obj.commentaire:
+    #             x+=' - ' + str(obj.commentaire)
+    #         result.append((obj.id, x))
+    #     return result
 
 
     @api.model
@@ -87,21 +99,33 @@ class IsAffaireTauxJournalier(models.Model):
 class IsAffaireForfaitJour(models.Model):
     _name = 'is.affaire.forfait.jour'
     _description = "Affaire Forfait frais jour"
+    _rec_name = 'rec_name'
 
     affaire_id  = fields.Many2one('is.affaire', 'Affaire', required=True, ondelete='cascade')
     montant     = fields.Integer("Forfait frais jour")
     nb_jours    = fields.Integer("Nombre de jours (si forfait jour)")
     commentaire = fields.Char("Commentaire")
+    rec_name    = fields.Char("Nom du document", compute='_compute_rec_name', readonly=True, store=True)
 
 
-    def name_get(self):
-        result = []
+    @api.depends('montant','commentaire')
+    def _compute_rec_name(self):
         for obj in self:
-            txt=str(obj.montant)+'€'
+            name="%s€"%(obj.montant)
             if obj.commentaire:
-                txt=txt+' - '+obj.commentaire
-            result.append((obj.id, txt))
-        return result
+                name = '%s - %s'%(name,obj.commentaire)
+            obj.rec_name = name
+
+
+    # TODO : name_get ne fonctionne plus avec Odoo 18, il faut créer un champ calculé rec_name
+    # def name_get(self):
+    #     result = []
+    #     for obj in self:
+    #         txt=str(obj.montant)+'€'
+    #         if obj.commentaire:
+    #             txt=txt+' - '+obj.commentaire
+    #         result.append((obj.id, txt))
+    #     return result
 
 
     @api.model
@@ -130,6 +154,8 @@ class IsAffaireIntervenant(models.Model):
         ], "Type d'intervenant", compute='_compute', readonly=True, store=True)
     commentaire   = fields.Char("Commentaire")
 
+
+    # TODO : name_get ne fonctionne plus avec Odoo 18, il faut créer un champ calculé rec_name
     # def name_get(self):
     #     result = []
     #     for obj in self:
@@ -322,11 +348,11 @@ class IsAffaire(models.Model):
             total_facture_ttc  = 0
             total_encaissement = 0
             reste_encaissement = 0
-            # for invoice in obj.facture_ids:
-            #     total_facture_ht   += invoice.amount_untaxed
-            #     total_facture_ttc  += invoice.amount_total_signed
-            #     total_encaissement += invoice.amount_total_signed-invoice.residual_signed
-            #     reste_encaissement += invoice.residual_signed
+            for invoice in obj.facture_ids:
+                total_facture_ht   += invoice.amount_untaxed
+                total_facture_ttc  += invoice.amount_total_signed
+                total_encaissement += invoice.amount_total_signed-invoice.amount_residual_signed
+                reste_encaissement += invoice.amount_residual_signed
             obj.total_facture_ht   = total_facture_ht
             obj.total_facture_ttc  = total_facture_ttc
             obj.total_encaissement = total_encaissement
@@ -390,7 +416,7 @@ class IsAffaire(models.Model):
     activite_ids       = fields.One2many('is.activite', 'affaire_id', 'Activités')
     frais_ids          = fields.One2many('is.frais'   , 'affaire_id', 'Frais')
     suivi_temps_ids    = fields.One2many('is.suivi.temps', 'affaire_id', 'Suivi du temps')
-    # facture_ids        = fields.One2many('account.move', 'is_affaire_id', 'Factures')
+    facture_ids        = fields.One2many('account.move', 'is_affaire_id', 'Factures')
 
     facture_st_ids     = fields.One2many('is.facture.st', 'affaire_id', 'Factures ST')
 
@@ -412,7 +438,7 @@ class IsAffaire(models.Model):
 
 
 
-
+    # TODO : name_get ne fonctionne plus avec Odoo 18, il faut créer un champ calculé rec_name
     # def name_get(self):
     #     result = []
     #     for obj in self:

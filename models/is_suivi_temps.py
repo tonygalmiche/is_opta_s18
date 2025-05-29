@@ -72,6 +72,7 @@ class IsSuiviTemps(models.Model):
     _name = 'is.suivi.temps'
     _description = "Suivi du temps"
     _order = 'date_activite desc'
+    _rec_name = 'date_activite'
 
 
     @api.depends('aller_heure_depart','aller_heure_arrivee','retour_heure_depart','retour_heure_arrivee')
@@ -142,11 +143,12 @@ class IsSuiviTemps(models.Model):
     detail_activite      = fields.Text("Détail des activités réalisées")
 
 
-    def name_get(self):
-        result = []
-        for obj in self:
-            result.append((obj.id, '['+str(obj.date_activite)+'] '+str(obj.activite_id.nature_activite)))
-        return result
+    # TODO : name_get ne fonctionne plus avec Odoo 18, il faut créer un champ calculé rec_name
+    # def name_get(self):
+    #     result = []
+    #     for obj in self:
+    #         result.append((obj.id, '['+str(obj.date_activite)+'] '+str(obj.activite_id.nature_activite)))
+    #     return result
 
 
     def copie_suivi_temps_action(self):

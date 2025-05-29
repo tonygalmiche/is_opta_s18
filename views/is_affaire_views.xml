@@ -279,20 +279,20 @@
                         </page>
                         <page string="Factures" invisible="state not in ['affaire_gagnee','affaire_soldee']">
                             <group>
-                                <!-- <field name="facture_ids" nolabel="1" readonly="1">
+                                <field name="facture_ids" nolabel="1" readonly="1">
                                     <list>
-                                        <button string="Facture" name="acceder_facture_action" type="object" icon="fa-search-plus"/>
-                                        <field name="date_invoice"/>
-                                        <field name="number"/>
+                                        <button title="Facture" name="acceder_facture_action" type="object" icon="fa-search-plus"/>
+                                        <field name="invoice_date"/>
+                                        <field name="name"/>
                                         <field name="is_createur_id"/>
-                                        <field name="date_due"/>
+                                        <field name="invoice_date_due"/>
                                         <field name="amount_untaxed"      string="Total HT"   sum="Total"/>
                                         <field name="amount_tax"          string="TVA"        sum="Total"/>
                                         <field name="amount_total_signed" string="Total TTC"  sum="Total"/>
-                                        <field name="residual_signed"     string="Restant du" sum="Total"/>
+                                        <field name="amount_residual_signed"     string="Restant du" sum="Total"/>
                                         <field name="state"/>
                                     </list>
-                                </field> -->
+                                </field>
                             </group>
                             <group>
                                 <field name="total_facture_ht"/>
@@ -377,6 +377,7 @@
                 <field name="secteur_id"/>
                 <field name="annee_creation"/>
                 <field name="state"/>
+                <field name="createur_id"/>
            </search>
         </field>
     </record>

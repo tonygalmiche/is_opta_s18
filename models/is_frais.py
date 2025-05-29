@@ -44,6 +44,7 @@ class IsFrais(models.Model):
     _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin']
     _description = "Frais"
     _order = 'chrono desc'
+    _rec_name = 'rec_name'
 
 
     @api.depends('date_creation','createur_id','chrono')
@@ -121,6 +122,25 @@ class IsFrais(models.Model):
             ('valide'   , u'Validé'),
         ], u"État", index=True, default='brouillon')
     is_dynacase_ids = fields.Many2many('is.dynacase', 'is_frais_dynacase_rel', 'doc_id', 'dynacase_id', 'Ids Dynacase', readonly=True)
+    rec_name = fields.Char("Nom du document", compute='_compute_rec_name', readonly=True, store=True)
+
+
+    @api.depends('login','mois_creation','chrono')
+    def _compute_rec_name(self):
+        for obj in self:
+            name = '%s-%s-%s'%(obj.login,obj.mois_creation,obj.chrono)
+            obj.rec_name = name
+
+
+
+    # TODO : name_get ne fonctionne plus avec Odoo 18, il faut créer un champ calculé rec_name
+    # def name_get(self):
+    #     result = []
+    #     for obj in self:
+    #         result.append((obj.id, str(obj.login)+'-'+str(obj.mois_creation)+'-'+str(obj.chrono)))
+    #     return result
+
+
 
     # @api.model
     # def create(self, vals):
@@ -133,11 +153,6 @@ class IsFrais(models.Model):
     #     return res
 
 
-    def name_get(self):
-        result = []
-        for obj in self:
-            result.append((obj.id, str(obj.login)+'-'+str(obj.mois_creation)+'-'+str(obj.chrono)))
-        return result
 
 
     @api.model

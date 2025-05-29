@@ -113,8 +113,9 @@
                     optional="show"
                 />
                 <field name="nb_jours"              optional="show" sum="Total"/>
+                <field name="forfait_jour_id"       optional="hide" />
                 <field name="montant_forfait"       optional="show" />
-                <field name="parcours"              optional="show"/>
+                <field name="parcours"              optional="hide"/>
                 <field name="dates"                 optional="show"/>
                 <field name="total_consultant"      optional="show" sum="Total"/>
                 <field name="total_refacturable"    optional="show" sum="Total"/>
