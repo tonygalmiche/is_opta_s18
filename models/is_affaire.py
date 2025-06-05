@@ -556,14 +556,15 @@ class IsAffaire(models.Model):
                 'res_model': 'account.move',
                 'type': 'ir.actions.act_window',
                 'view_id': self.env.ref('account.view_move_form').id,
-                'domain': [('type','=','out_invoice')],
+                'domain': [('move_type','=','out_invoice')],
                 'context': {
                     'default_partner_id': partner_id,
                     'default_is_affaire_id': obj.id,
-                    'default_invoice_type' : 'out_invoice',
-                    'default_journal_type' : 'sale',
+                    'default_move_type' : 'out_invoice',
+                    # 'default_journal_type' : 'sale',
                 }
             }
             return res
 
-
+# {'search_default_out_invoice': 1, 'default_move_type': 'out_invoice'}
+# [('move_type', 'in', ['out_invoice', 'out_refund'])]

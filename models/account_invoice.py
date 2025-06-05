@@ -171,7 +171,7 @@ class AccountInvoice(models.Model):
                 if not account_id:
                     raise ValidationError(u"Compte de revenus non défini pour l'article "+product_id.name+u' (id='+str(product_id.product_tmpl_id.id)+u')')
                 vals={
-                    'invoice_id'           : obj.id,
+                    'move_id'              : obj.id,
                     'product_id'           : product_id.id,
                     'name'                 : ' ',
                     'price_unit'           : 0,
@@ -179,8 +179,11 @@ class AccountInvoice(models.Model):
                     'is_dates_intervention': act.dates_intervention,
                     'is_activite_id'       : act.id,
                 }
-                line=self.env['account.invoice.line'].create(vals)
-                line._onchange_product_id()
+
+                print(vals)
+
+                line=self.env['account.move.line'].create(vals)
+                #line._onchange_product_id()
                 line.quantity   = act.nb_facturable
                 line.price_unit = act.montant
                 line.name       = act.nature_activite
