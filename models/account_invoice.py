@@ -38,8 +38,8 @@ class AccountInvoiceLine(models.Model):
 
 
     def uptate_onchange_product_id(self):
-        for obj in self:
-            obj._onchange_product_id()
+        # for obj in self:
+        #     obj._onchange_product_id()
         return True
 
 
@@ -217,7 +217,7 @@ class AccountInvoice(models.Model):
                             'is_frais_id'          : frais.id,
                         }
                         line=self.env['account.invoice.line'].create(vals)
-                        line._onchange_product_id()
+                        #line._onchange_product_id()
                         line.quantity   = frais.nb_jours
                         line.price_unit = frais.montant_forfait
                         is_frais+=line.quantity*line.price_unit
@@ -239,7 +239,7 @@ class AccountInvoice(models.Model):
                                 'is_frais_ligne_id'    : ligne.id,
                             }
                             line=self.env['account.move.line'].create(vals)
-                            line._onchange_product_id()
+                            #line._onchange_product_id()
                             line.quantity   = 1
                             line.price_unit = ligne.montant_ttc
                             is_frais+=ligne.montant_ttc
