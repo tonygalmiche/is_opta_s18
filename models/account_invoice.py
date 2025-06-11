@@ -238,7 +238,7 @@ class AccountInvoice(models.Model):
                                 'is_frais_id'          : frais.id,
                                 'is_frais_ligne_id'    : ligne.id,
                             }
-                            line=self.env['account.invoice.line'].create(vals)
+                            line=self.env['account.move.line'].create(vals)
                             line._onchange_product_id()
                             line.quantity   = 1
                             line.price_unit = ligne.montant_ttc
