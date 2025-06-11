@@ -316,13 +316,12 @@ class IsAffaire(models.Model):
     @api.depends('intervenant_ids')
     def _compute_consultant_ids(self):
         for obj in self:
-            obj.consultant_ids.unlink()
             ids=[]
             for row in obj.intervenant_ids:
                 x=row.intervenant_id.is_consultant_id.id or False
                 if x and x not in ids:
                     ids.append(x)
-            obj.consultant_ids=[(6,0,ids)]
+            obj.consultant_ids=[(6,0,ids)]  # Cela remplace automatiquement toutes les relations existantes
 
 
     @api.depends('activite_ids')
