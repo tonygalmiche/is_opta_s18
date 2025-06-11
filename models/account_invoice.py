@@ -208,7 +208,7 @@ class AccountInvoice(models.Model):
                         if account_id==False:
                             raise ValidationError(u"Compte de revenu non renseigné pour l'article "+product.name)
                         vals={
-                            'invoice_id'           : obj.id,
+                            'move_id'              : obj.id,
                             'product_id'           : product.id,
                             'name'                 : product.name,
                             'price_unit'           : 0,
@@ -229,7 +229,7 @@ class AccountInvoice(models.Model):
                             if account_id==False:
                                 raise ValidationError(u"Compte de revenu non renseigné pour l'article "+ligne.product_id.name)
                             vals={
-                                'invoice_id'           : obj.id,
+                                'move_id'              : obj.id,
                                 'product_id'           : ligne.product_id.id,
                                 'name'                 : ligne.product_id.name,
                                 'price_unit'           : 0,
