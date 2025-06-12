@@ -4,7 +4,6 @@
         <template id="is_report_invoice_document" name="is_report_invoice_document" inherit_id="account.report_invoice_document">
             <xpath expr="//div[hasclass('page')]" position="replace">
                 <div class="page">
-
                     <style>
                         h2{
                             font-size:14pt;
@@ -15,7 +14,7 @@
                         td,th{
                             font-size:10pt;
                         }
-                        rs{
+                        .rs{
                             font-size:12pt;
                             font-weight: bold;
                         }
@@ -53,7 +52,7 @@
                     </h2>
                     <p><b>Affaire : </b><span t-field="o.is_affaire_id.nature_affaire"/></p>
                     <t t-set="phases" t-value="o.get_invoice_line()"/>
-                    <p t-raw="phases"/>
+                    <div t-raw="phases"/>
                     <div class="clearfix">
                         <div id="total" class="row">
                             <div class="col-8"/>

@@ -2,6 +2,7 @@
 from odoo import api, fields, models, _                         # type: ignore
 from odoo.exceptions import ValidationError,UserError           # type: ignore
 from odoo.addons.account.models.chart_template import template  # type: ignore
+from markupsafe import Markup
 
 
 #TODO : 
@@ -179,9 +180,6 @@ class AccountInvoice(models.Model):
                     'is_dates_intervention': act.dates_intervention,
                     'is_activite_id'       : act.id,
                 }
-
-                print(vals)
-
                 line=self.env['account.move.line'].create(vals)
                 #line._onchange_product_id()
                 line.quantity   = act.nb_facturable
@@ -340,7 +338,8 @@ class AccountInvoice(models.Model):
                         html+=self._add_tr(line)
             html+='</tbody>'
             html+='</table>'
-            return html
+            res=Markup(html)
+            return res
 
 
 

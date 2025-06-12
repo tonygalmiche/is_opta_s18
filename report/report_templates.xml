@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="web.external_layout_standard">
+<template id="web.external_layout_standard">
         <div t-attf-class="header o_company_#{company.id}_layout">
-            <div class="row">
-                <div class="col-3">
-                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 30mm;" alt="Logo"/>
-                </div>
-                <div class="col-9 text-right">
-                </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" alt="Logo" style="max-height: 30mm;"/>
             </div>
         </div>
+        <t t-set="layout_background_url"
+           t-value="'data:image/png;base64,%s' % company.layout_background_image.decode('utf-8') if company.layout_background_image and company.layout_background == 'Custom' else
+                '/base/static/img/demo_logo_report.png' if company.layout_background == 'Demo logo' else ''" />
         <div t-attf-class="article o_report_layout_standard o_table_standard o_company_#{company.id}_layout o_snail_mail {{'o_report_layout_background' if company.layout_background != 'Blank' else ''}}"
-             t-attf-style="background-image: url({{ 'data:image/png;base64,%s' % company.layout_background_image.decode('utf-8') if company.layout_background_image and company.layout_background == 'Custom' else
-                           '/base/static/img/demo_logo_report.png' if company.layout_background == 'Demo logo' else ''}});"
+             t-attf-style="{{ 'background-image: url(%s);' % layout_background_url if layout_background_url else '' }}"
              t-att-data-oe-model="o and o._name"
              t-att-data-oe-id="o and o.id"
              t-att-data-oe-lang="o and o.env.context.get('lang')">
@@ -32,5 +30,5 @@
                 Site internet : <span t-field="company.website"/><br />
             </div>
         </div>
-    </template>
+</template>
 </odoo>

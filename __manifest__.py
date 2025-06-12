@@ -41,7 +41,6 @@ InfoSaône - Module Odoo 18 pour Opta-S / SGP
         # 'views/is_invoice_activite_views.xml',
         'views/is_facture_st_views.xml',
         'views/is_suivi_production_affaire.xml',
-        # 'views/is_google_agenda_view.xml',
         'views/menu.xml',
         'report/report_templates.xml',
         'report/report_invoice.xml',
@@ -50,9 +49,6 @@ InfoSaône - Module Odoo 18 pour Opta-S / SGP
         'web.assets_backend': [
             'is_opta_s18/static/src/**/*',
          ],
-        # 'web.report_assets_common': [
-        #     'is_plastigray16/static/src/scss/plastigray_report.scss',
-        # ]
     },
     'license': 'AGPL-3',
     'installable': True,
