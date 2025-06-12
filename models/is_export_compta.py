@@ -44,9 +44,9 @@ class is_export_compta(models.Model):
 
 
     def generer_lignes_action(self):
-        cr,uid,context = self.env.args
+        cr = self._cr
         for obj in self:
-            user = self.env['res.users'].browse(uid)
+            user  = self.env.user
             company  = user.company_id
             obj.ligne_ids.unlink()
             if obj.journal=='VE':
@@ -173,7 +173,9 @@ class is_export_compta(models.Model):
                         if lig.montant_tva:
                             general='445xxx'
                             for tax in lig.product_id.supplier_taxes_id:
-                                general=tax.account_id.code
+                                for line_tax in tax.invoice_repartition_line_ids:
+                                    if line_tax.account_id:
+                                        general=line_tax.account_id.code
                             vals['general']   = general
                             vals['montant'] = lig.montant_tva
                             self.env['is.export.compta.ligne'].create(vals)
@@ -211,7 +213,7 @@ class is_export_compta(models.Model):
             r=base64.b64encode(r)
             vals = {
                 'name':        name,
-                'datas_fname': name,
+                #'datas_fname': name,
                 'type':        'binary',
                 'res_model':   model,
                 'res_id':      obj.id,

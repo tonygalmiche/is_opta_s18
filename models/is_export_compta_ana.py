@@ -65,9 +65,9 @@ class is_export_compta_ana(models.Model):
 
 
     def generer_lignes_action(self):
-        cr,uid,context = self.env.args
+        cr = self._cr
         for obj in self:
-            user = self.env['res.users'].browse(uid)
+            user  = self.env.user
             company  = user.company_id
             obj.ligne_ids.unlink()
 
@@ -205,9 +205,9 @@ class is_export_compta_ana(models.Model):
             if obj.journal=='VE':
                 journal=company.is_journal_vente
 
-                invoices=self.env['account.invoice'].search([
-                        ('date_invoice', '>=', obj.date_debut),
-                        ('date_invoice', '<=', obj.date_fin),
+                invoices=self.env['account.move'].search([
+                        ('invoice_date', '>=', obj.date_debut),
+                        ('invoice_date', '<=', obj.date_fin),
                         ('state'       , 'in', ['open','paid']),
                     ])
 
@@ -226,7 +226,7 @@ class is_export_compta_ana(models.Model):
                         'export_compta_id': obj.id,
                         'ligne'           : ct,
                         'type_ecriture'   : 'G',
-                        'date_facture'    : invoice.date_invoice,
+                        'date_facture'    : invoice.invoice_date,
                         'journal'         : journal,
                         'general'         : '411000',
                         'auxilaire'       : auxilaire,
@@ -256,7 +256,7 @@ class is_export_compta_ana(models.Model):
                                 'export_compta_id': obj.id,
                                 'ligne'           : ct,
                                 'type_ecriture'   : 'G',
-                                'date_facture'    : invoice.date_invoice,
+                                'date_facture'    : invoice.invoice_date,
                                 'journal'         : journal,
                                 'general'         : general,
                                 'sens'            : sens,
@@ -284,7 +284,7 @@ class is_export_compta_ana(models.Model):
                                 'export_compta_id': obj.id,
                                 'ligne'           : ct,
                                 'type_ecriture'   : 'A1',
-                                'date_facture'    : invoice.date_invoice,
+                                'date_facture'    : invoice.invoice_date,
                                 'journal'         : journal,
                                 'general'         : general,
                                 'sens'            : sens,
@@ -316,7 +316,7 @@ class is_export_compta_ana(models.Model):
                                 'export_compta_id': obj.id,
                                 'ligne'           : ct,
                                 'type_ecriture'   : 'A2',
-                                'date_facture'    : invoice.date_invoice,
+                                'date_facture'    : invoice.invoice_date,
                                 'journal'         : journal,
                                 'general'         : general,
                                 'sens'            : sens,
@@ -346,7 +346,7 @@ class is_export_compta_ana(models.Model):
                             'export_compta_id': obj.id,
                             'ligne'           : ct,
                             'type_ecriture'   : 'G',
-                            'date_facture'    : invoice.date_invoice,
+                            'date_facture'    : invoice.invoice_date,
                             'journal'         : journal,
                             'general'         : '467100',
                             'sens'            : 'C',
@@ -379,7 +379,7 @@ class is_export_compta_ana(models.Model):
                             'export_compta_id': obj.id,
                             'ligne'           : ct,
                             'type_ecriture'   : 'G',
-                            'date_facture'    : invoice.date_invoice,
+                            'date_facture'    : invoice.invoice_date,
                             'journal'         : journal,
                             'general'         : general,
                             'sens'            : 'C',
@@ -419,7 +419,7 @@ class is_export_compta_ana(models.Model):
                                 'export_compta_id': obj.id,
                                 'ligne'           : ct,
                                 'type_ecriture'   : 'G',
-                                'date_facture'    : invoice.date_invoice,
+                                'date_facture'    : invoice.invoice_date,
                                 'journal'         : journal,
                                 'general'         : general,
                                 'auxilaire'       : '',
@@ -469,7 +469,7 @@ class is_export_compta_ana(models.Model):
             r=base64.b64encode(r)
             vals = {
                 'name':        name,
-                'datas_fname': name,
+                #'datas_fname': name,
                 'type':        'binary',
                 'res_model':   model,
                 'res_id':      obj.id,
