@@ -308,11 +308,15 @@ class AccountInvoice(models.Model):
                         </thead>
                         <tbody class="invoice_tbody">
             """
+
+
+
             if obj.is_phase:
                 #Recherche des phases et sous-phases à afficher ****************
                 phase_ids=[]
                 sous_phase_ids=[]
                 for phase in obj.is_affaire_id.phase_ids:
+
                     for sous_phase in obj.is_affaire_id.activite_phase_ids:
                         if sous_phase.affaire_phase_id.id==phase.id:
                             for line in obj.invoice_line_ids:
@@ -339,6 +343,9 @@ class AccountInvoice(models.Model):
             html+='</tbody>'
             html+='</table>'
             res=Markup(html)
+
+
+
             return res
 
 

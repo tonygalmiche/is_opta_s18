@@ -54,12 +54,12 @@ class is_export_compta(models.Model):
                 sql="""
                     SELECT  
                         aml.date,
-                        aa.code, 
+                        aa.code_store->>'1', 
                         rp.is_compte_auxilaire_client,
                         rp.name,
-                        ai.number,
+                        ai.name,
                         sum(aml.credit)-sum(aml.debit)
-                    FROM account_move_line aml left outer join account_invoice ai        on aml.move_id=ai.move_id
+                    FROM account_move_line aml left outer join account_move ai           on aml.move_id=ai.id
                                                inner join account_account aa             on aml.account_id=aa.id
                                                left outer join res_partner rp            on aml.partner_id=rp.id
                                                inner join account_journal aj             on aml.journal_id=aj.id
@@ -70,9 +70,9 @@ class is_export_compta(models.Model):
 
                     GROUP BY
                         aml.date,
-                        aa.code, 
+                        aa.code_store, 
                         rp.is_compte_auxilaire_client,
-                        ai.number,
+                        ai.name,
                         rp.name
                 """
                 cr.execute(sql)

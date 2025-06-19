@@ -22,7 +22,7 @@ class ResPartner(models.Model):
             ('satisfaisant'     ,'Satisfaisant'),
             ('a_surveiller'     ,'A surveiller'),
         ], string='Évaluation')
-
-
+    customer = fields.Boolean("Client"     , default=True)
+    supplier = fields.Boolean("Fournisseur", default=False)
 
 
