@@ -360,7 +360,7 @@ class IsAffaire(models.Model):
     name                 = fields.Char("Code affaire court", readonly=True, index=True)
     code_long            = fields.Char("Code affaire", compute='_compute', readonly=True, store=True, index=True)
     nature_affaire       = fields.Char("Nature de l'affaire"      , required=True, readonly=False) # states={'offre_en_cours': [('readonly', False)],'affaire_gagnee': [('readonly', False)]})
-    partner_id           = fields.Many2one('res.partner', "Client", required=True, index=True,readonly=False) # states={'offre_en_cours': [('readonly', False)]}) domain=[('customer','=',True),('is_company','=',True)]
+    partner_id           = fields.Many2one('res.partner', "Client", required=True, index=True,readonly=False, domain=[('customer','=',True),('is_company','=',True)]) # states={'offre_en_cours': [('readonly', False)]})
     type_intervention_id = fields.Many2one('is.type.intervention', "Type d'intervention", 
                                 readonly=False) # states={'offre_en_cours': [('readonly', False)]})
     secteur_id           = fields.Many2one('is.secteur', "Secteur", help="Secteur ou Type de politique publique",

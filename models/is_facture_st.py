@@ -23,7 +23,7 @@ class IsFactureST(models.Model):
     description       = fields.Text("Description de la prestation", required=True)
     montant_ht        = fields.Float("Montant HT", digits=(14,2), required=True)
     frais             = fields.Float("Frais", digits=(14,2))
-    client_id         = fields.Many2one('res.partner', "Client"  , required=True, index=True, domain=[('is_company','=',True)]) #('customer','=',True),
+    client_id         = fields.Many2one('res.partner', "Client"  , required=True, index=True, domain=[('is_company','=',True),('customer','=',True)])
     affaire_id        = fields.Many2one('is.affaire', 'Affaire'  , required=True)
     activite_id       = fields.Many2one('is.activite', 'Activité', required=True)
 
