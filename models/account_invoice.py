@@ -181,6 +181,7 @@ class AccountInvoice(models.Model):
                     'is_activite_id'       : act.id,
                 }
                 line=self.env['account.move.line'].create(vals)
+                line._compute_account_id()
                 #line._onchange_product_id()
                 line.quantity   = act.nb_facturable
                 line.price_unit = act.montant
