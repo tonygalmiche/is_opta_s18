@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <menuitem
-        id="is_crm_main_menu"
-        name="CRM"
-        sequence="1"
-    />
+   
+
+    
+   <record id="is_crm_main_menu" model="ir.ui.menu" >
+        <field name="name">CRM</field>
+        <field name="sequence">1</field>
+        <field name="groups_id" eval="[(6,0,[
+            ref('is_administratif_group'),
+            ref('base.group_user')
+        ])]"/>
+    </record>
 
 
 
@@ -291,13 +297,13 @@
         sequence="10"
         action="is_suivi_production_action"
     />
-    <!-- <menuitem
+    <menuitem
         id="is_suivi_production_facture_menu"
         name="Suivi de production sur facture"
         parent="is_crm_indicateur_menu"
         sequence="20"
         action="is_suivi_production_facture_action"
-    /> -->
+    />
 
 
     <menuitem

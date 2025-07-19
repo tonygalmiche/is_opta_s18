@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-    <!-- <record model="ir.module.category" id="is_groupe_optas_module_category">
+    <!-- Il faut créer une catégorie par groupe pour éviter que le groupe soit masqué par défaut -->
+    <record model="ir.module.category" id="is_consultants_module_category">
         <field name="name">Groupes Opta-S / SGP</field>
         <field name="description">Groupes Opta-S / SGP</field>
-        <field name="sequence">1</field>
-    </record>
- -->
-
-
-    <record model="res.groups" id="is_consultants_group" >
-        <field name="name">Consultants</field>
-        <field name="comment"></field>
-        <!-- <field name="category_id" ref="is_groupe_optas_module_category"/> -->
+        <field name="sequence">7</field>
     </record>
     <record model="res.groups" id="is_administratif_group" >
         <field name="name">Gestion commerciale et administrative</field>
         <field name="comment"></field>
-        <!-- <field name="category_id" ref="is_groupe_optas_module_category"/> -->
+        <field name="category_id" ref="is_administratif_category"/>
     </record>
 
-
+    <record model="ir.module.category" id="is_administratif_category">
+        <field name="name">Groupes Opta-S / SGP</field>
+        <field name="description">Groupes Opta-S / SGP</field>
+        <field name="sequence">7</field>
+    </record>
+    <record model="res.groups" id="is_consultants_group" >
+        <field name="name">Consultants</field>
+        <field name="comment"></field>
+        <field name="category_id" ref="is_consultants_module_category"/>
+    </record>
 </odoo>
