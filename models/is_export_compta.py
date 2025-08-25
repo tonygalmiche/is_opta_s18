@@ -41,6 +41,15 @@ class is_export_compta(models.Model):
     #     return res
 
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            vals['name'] = self.env['ir.sequence'].next_by_code('is.export.compta')
+        return super().create(vals_list)
+
+
+
+
 
 
     def generer_lignes_action(self):

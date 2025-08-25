@@ -40,6 +40,18 @@ class is_export_compta_ana(models.Model):
     #     return res
 
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            vals['name'] = self.env['ir.sequence'].next_by_code('is.export.compta.ana')
+        return super().create(vals_list)
+
+
+
+
+
+
+
     def ajout_ligne(self,id,journal,ct,type_ecriture,date_facture,compte_general,compte_auxilaire,sens,montant,piece,axe1,axe2,libelle,partner_id,anomalie,frais_id=False,product_id=False,consultant_id=False):
         vals={
             'export_compta_id': id,

@@ -463,6 +463,16 @@ class IsAffaire(models.Model):
     #     return res
 
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            vals['name'] = self.env['ir.sequence'].next_by_code('is.affaire')
+        return super().create(vals_list)
+
+
+
+
+
     # def write(self, vals):
     #     res=super(IsAffaire, self).write(vals)
     #     if 'responsable_id' in vals:

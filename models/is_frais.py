@@ -154,6 +154,22 @@ class IsFrais(models.Model):
 
 
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if 'activite_id' in vals:
+                activite_id=vals['activite_id']
+                affaire_id=self.env['is.activite'].browse(activite_id).affaire_id.id
+                vals['affaire_id']=affaire_id
+            vals['chrono'] = self.env['ir.sequence'].next_by_code('is.frais')
+        return super().create(vals_list)
+
+
+
+
+
+
+
 
     @api.model
     def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
