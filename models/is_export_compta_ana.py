@@ -82,8 +82,6 @@ class is_export_compta_ana(models.Model):
             user  = self.env.user
             company  = user.company_id
             obj.ligne_ids.unlink()
-
-
             if obj.journal=='AC':
                 journal=company.is_journal_achat
                 ct=0
@@ -220,9 +218,8 @@ class is_export_compta_ana(models.Model):
                 invoices=self.env['account.move'].search([
                         ('invoice_date', '>=', obj.date_debut),
                         ('invoice_date', '<=', obj.date_fin),
-                        ('state'       , 'in', ['open','paid']),
+                        ('state'       , 'in', ['posted']),
                     ])
-
                 ct=0
                 for invoice in invoices:
                     #** Ligne G Total TTC au débit *****************************
@@ -232,7 +229,7 @@ class is_export_compta_ana(models.Model):
                     if not auxilaire:
                         anomalie='Compte auxilaire non défini pour ce client'
                     sens='D'
-                    if invoice.type=='out_refund':
+                    if invoice.move_type=='out_refund':
                         sens='C'
                     vals={
                         'export_compta_id': obj.id,
@@ -245,7 +242,7 @@ class is_export_compta_ana(models.Model):
                         'sens'            : sens,
                         'montant'         : invoice.amount_total,
                         'libelle'         : invoice.partner_id.name,
-                        'reference'       : invoice.number,
+                        'reference'       : invoice.name,
                         'invoice_id'      : invoice.id,
                         'partner_id'      : invoice.partner_id.id,
                         'anomalie'        : anomalie,
@@ -254,7 +251,7 @@ class is_export_compta_ana(models.Model):
                     #***********************************************************
 
                     sens='C'
-                    if invoice.type=='out_refund':
+                    if invoice.move_type=='out_refund':
                         sens='D'
                     for line in invoice.invoice_line_ids:
                         if not line.is_frais_id:
@@ -274,7 +271,7 @@ class is_export_compta_ana(models.Model):
                                 'sens'            : sens,
                                 'montant'         : line.price_subtotal,
                                 'libelle'         : invoice.partner_id.name,
-                                'reference'       : invoice.number,
+                                'reference'       : invoice.name,
                                 'invoice_id'      : invoice.id,
                                 'partner_id'      : invoice.partner_id.id,
                                 'anomalie'        : anomalie,
@@ -302,7 +299,7 @@ class is_export_compta_ana(models.Model):
                                 'sens'            : sens,
                                 'montant'         : line.price_subtotal,
                                 'libelle'         : invoice.partner_id.name,
-                                'reference'       : invoice.number,
+                                'reference'       : invoice.name,
                                 'invoice_id'      : invoice.id,
                                 'partner_id'      : invoice.partner_id.id,
                                 'activite_id'     : line.is_activite_id.id,
@@ -334,7 +331,7 @@ class is_export_compta_ana(models.Model):
                                 'sens'            : sens,
                                 'montant'         : line.price_subtotal,
                                 'libelle'         : invoice.partner_id.name,
-                                'reference'       : invoice.number,
+                                'reference'       : invoice.name,
                                 'invoice_id'      : invoice.id,
                                 'partner_id'      : invoice.partner_id.id,
                                 'activite_id'     : line.is_activite_id.id,
@@ -364,7 +361,7 @@ class is_export_compta_ana(models.Model):
                             'sens'            : 'C',
                             'montant'         : refacture,
                             'libelle'         : invoice.partner_id.name,
-                            'reference'       : invoice.number,
+                            'reference'       : invoice.name,
                             'invoice_id'      : invoice.id,
                             'partner_id'      : invoice.partner_id.id,
                         }
@@ -397,7 +394,7 @@ class is_export_compta_ana(models.Model):
                             'sens'            : 'C',
                             'montant'         : frais_forfait[axe2],
                             'libelle'         : invoice.partner_id.name,
-                            'reference'       : invoice.number,
+                            'reference'       : invoice.name,
                             'invoice_id'      : invoice.id,
                             'partner_id'      : invoice.partner_id.id,
                         }
@@ -418,10 +415,11 @@ class is_export_compta_ana(models.Model):
 
                     #** Ligne G pour la TVA ************************************
                     sens='C'
-                    if invoice.type=='out_refund':
+                    if invoice.move_type=='out_refund':
                         sens='D'
-                    for line in invoice.tax_line_ids:
-                        if line.amount_total:
+                    #for line in invoice.tax_line_ids:
+                    for line in invoice.line_ids:
+                        if line.tax_line_id and line.balance:
                             ct=ct+1
                             anomalie=''
                             general = line.account_id.code
@@ -436,9 +434,9 @@ class is_export_compta_ana(models.Model):
                                 'general'         : general,
                                 'auxilaire'       : '',
                                 'sens'            : sens,
-                                'montant'         : line.amount_total,
+                                'montant'         : abs(line.balance),
                                 'libelle'         : invoice.partner_id.name,
-                                'reference'       : invoice.number,
+                                'reference'       : invoice.name,
                                 'invoice_id'      : invoice.id,
                                 'partner_id'      : invoice.partner_id.id,
                                 'anomalie'        : anomalie,
