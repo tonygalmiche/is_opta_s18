@@ -365,7 +365,7 @@
     <record id="is_activite_brouillon_intervenant_rule" model="ir.rule">
         <field name="name">Accès en modification à l'état 'Brouillon' pour l'Intervenant</field>
         <field name="model_id" ref="model_is_activite"/>
-        <field name="domain_force">[('state','=','brouillon'),('intervenant_id.intervenant_id','=',user.id)]</field>
+    <field name="domain_force">[('state','=','brouillon'),'|',('intervenant_id.intervenant_id.is_consultant_id','=',user.id),('affaire_id.responsable_id','=',user.id)]</field>
         <field name="groups" eval="[(6,0,[
             ref('base.group_user'),
         ])]"/>
