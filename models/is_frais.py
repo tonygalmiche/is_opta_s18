@@ -132,28 +132,6 @@ class IsFrais(models.Model):
             obj.rec_name = name
 
 
-
-    # TODO : name_get ne fonctionne plus avec Odoo 18, il faut créer un champ calculé rec_name
-    # def name_get(self):
-    #     result = []
-    #     for obj in self:
-    #         result.append((obj.id, str(obj.login)+'-'+str(obj.mois_creation)+'-'+str(obj.chrono)))
-    #     return result
-
-
-
-    # @api.model
-    # def create(self, vals):
-    #     if 'activite_id' in vals:
-    #         activite_id=vals['activite_id']
-    #         affaire_id=self.env['is.activite'].browse(activite_id).affaire_id.id
-    #         vals['affaire_id']=affaire_id
-    #     vals['chrono'] = self.env['ir.sequence'].next_by_code('is.frais')
-    #     res = super(IsFrais, self).create(vals)
-    #     return res
-
-
-
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -162,13 +140,27 @@ class IsFrais(models.Model):
                 affaire_id=self.env['is.activite'].browse(activite_id).affaire_id.id
                 vals['affaire_id']=affaire_id
             vals['chrono'] = self.env['ir.sequence'].next_by_code('is.frais')
-        return super().create(vals_list)
+        records = super().create(vals_list)
+        # Lier les PJ aux enregistrements créés
+        #records._link_justificatifs_to_record()
+        return records
 
+    # def write(self, vals):
+    #     res = super().write(vals)
+    #     # À chaque modification, s'assurer que les PJ sont correctement liées
+    #     self._link_justificatifs_to_record()
+    #     return res
 
+    # def _link_justificatifs_to_record(self):
+    #     """Force res_model/res_id sur les pièces jointes de justificatifs."""
+    #     for rec in self:
+    #         atts = rec.justificatif_ids.sudo().filtered(lambda a: a.res_id != rec.id or a.res_model != rec._name)
+    #         for att in atts:
+    #             att.write({'res_model': rec._name, 'res_id': rec.id})
 
-
-
-
+    # def action_backfill_justificatifs_links(self):
+    #     """Action utilitaire: corrige toutes les PJ existantes des frais."""
+    #     self.sudo().search([])._link_justificatifs_to_record()
 
 
     @api.model
