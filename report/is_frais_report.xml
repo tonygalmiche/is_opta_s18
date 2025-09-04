@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <!-- Action de rapport PDF pour is.frais -->
+    <record id="action_report_is_frais" model="ir.actions.report">
+      <field name="name">Fiche de frais</field>
+      <field name="model">is.frais</field>
+      <field name="report_type">qweb-pdf</field>
+      <field name="report_name">is_opta_s18.is_frais_document</field>
+      <field name="report_file">is_opta_s18.is_frais_document</field>
+      <field name="print_report_name">(object.chrono_long or object.display_name).replace('/','_')</field>
+      <field name="paperformat_id" ref="base.paperformat_euro"/>
+  <field name="binding_model_id" ref="model_is_frais"/>
+  <field name="binding_type">report</field>
+    </record>
+
+    <!-- Template principal du rapport -->
+    <template id="is_frais_document">
+      <t t-call="web.html_container">
+        <t t-foreach="docs" t-as="doc">
+        <t t-set="company" t-value="doc.company_id or doc.env.company"/>
+        <t t-set="o" t-value="doc"/>
+        <t t-call="web.external_layout">
+        <div class="page">
+          <style>
+            body, .page, table, th, td, h1, h2, h3, h4, h5, h6, p, span {
+              font-family: 'DejaVu Sans', 'Liberation Sans', Arial, Helvetica, sans-serif;
+            }
+            h3{
+              font-size:11pt;
+            }
+            .title{font-size:16pt;font-weight:bold;text-align:center;margin:4mm 0}
+            .small{font-size:9pt}
+            th,td{font-size:10pt}
+            /* Taille réduite pour le tableau des lignes de frais */
+            table[name="frais_lines"],
+            table[name="frais_lines"] th,
+            table[name="frais_lines"] td {
+              font-size:9pt;
+            }
+            table[name="frais_lines"] th,
+            table[name="frais_lines"] td {
+              padding: 2px 4px;
+              line-height: 1.2;
+            }
+              /* En-têtes du tableau en gras et centrés */
+              table[name="frais_lines"] th {
+                font-weight: 700;
+                text-align: center;
+                vertical-align: middle;
+              }
+            /* Bordures pour le tableau des lignes de frais */
+            table[name="frais_lines"] {
+              border-collapse: collapse;
+              width: 100%;
+            }
+            table[name="frais_lines"] th,
+            table[name="frais_lines"] td {
+              border: 1px solid #444;
+            }
+          </style>
+
+          <h2 class="title">Fiche de frais <span t-out="doc.chrono_long"/></h2>
+
+          <div class="row">
+            <div class="col-6">
+              <p>
+                <strong>Créateur:</strong> <span t-field="doc.createur_id"/><br/>
+                <strong>Date de création:</strong> <span t-field="doc.date_creation"/><br/>
+                <strong>Type d'activité:</strong> <span t-field="doc.type_activite"/>
+              </p>
+            </div>
+            <div class="col-6">
+              <p>
+                <strong>Affaire:</strong> <span t-field="doc.affaire_id"/><br/>
+                <strong>Activité:</strong> <span t-field="doc.activite_id"/>
+              </p>
+            </div>
+          </div>
+
+          <t t-if="doc.frais_forfait">
+            <p>
+              <strong>Frais au forfait:</strong>
+              <span>Oui</span> —
+              <strong>Nb jours:</strong> <span t-field="doc.nb_jours"/>
+              — <strong>Forfait jour:</strong> <span t-field="doc.forfait_jour_id"/>
+              — <strong>Montant forfait:</strong> <span t-field="doc.montant_forfait"/>
+            </p>
+          </t>
+
+          <t t-if="doc.parcours">
+            <p><strong>Parcours:</strong> <span t-field="doc.parcours"/></p>
+          </t>
+          <t t-if="doc.dates">
+            <p><strong>Dates:</strong> <span t-field="doc.dates"/></p>
+          </t>
+
+          <h3 style="margin-top:4mm">Lignes de frais</h3>
+          <table class="table table-sm" name="frais_lines">
+            <thead>
+              <tr>
+                <th>Fournisseur</th>
+                <th>Type de dépense</th>
+                <th>Effectuée par</th>
+                <th class="text-end">Montant TTC</th>
+                <th class="text-end">TVA récupérable</th>
+                <th>Refacturable</th>
+                <th>Commentaire</th>
+              </tr>
+            </thead>
+            <tbody>
+              <t t-foreach="doc.ligne_ids" t-as="l">
+                <tr>
+                  <td><span t-field="l.partner_id"/></td>
+                  <td><span t-field="l.product_id"/></td>
+                  <td><span t-field="l.effectuee_par_id"/></td>
+                  <td class="text-end"><span t-field="l.montant_ttc"/></td>
+                  <td class="text-end"><span t-field="l.montant_tva"/></td>
+                  <td><span t-field="l.refacturable"/></td>
+                  <td><span t-field="l.commentaire"/></td>
+                </tr>
+              </t>
+            </tbody>
+          </table>
+
+          <div class="row" style="margin-top:4mm">
+            <div class="col-7"/>
+            <div class="col-5">
+              <table class="table table-sm">
+                <tr>
+                  <td><strong>Total TTC Consultant à rembourser</strong></td>
+          <td class="text-end"><span t-field="doc.total_consultant"/></td>
+                </tr>
+                <tr>
+                  <td><strong>Total TTC refacturable</strong></td>
+          <td class="text-end"><span t-field="doc.total_refacturable"/></td>
+                </tr>
+                <tr>
+                  <td><strong>Total TTC de tous les frais</strong></td>
+          <td class="text-end"><span t-field="doc.total_frais"/></td>
+                </tr>
+                <tr>
+                  <td><strong>Total TVA récupérable</strong></td>
+          <td class="text-end"><span t-field="doc.total_tva_recuperable"/></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+      <t t-if="doc.justificatif_ids">
+            <h3>Justificatifs</h3>
+            <ul>
+        <t t-foreach="doc.justificatif_ids" t-as="att">
+                <li>
+                  <span t-out="att.name"/>
+                  <t t-if="att.mimetype and att.mimetype.startswith('image/')">
+                    <div style="margin:2mm 0">
+                      <img t-att-src="image_data_uri(att.datas)" style="max-height:60mm"/>
+                    </div>
+                  </t>
+                </li>
+              </t>
+            </ul>
+          </t>
+        </div>
+        </t>
+        </t>
+      </t>
+    </template>
+
+  
+  </data>
+</odoo>

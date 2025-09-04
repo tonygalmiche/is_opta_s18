@@ -91,6 +91,9 @@
                         <field name="total_tva_recuperable"/>
                     </group>
                 </sheet>
+                <!-- <footer>
+                    <button name="is_opta_s18.action_report_is_frais" string="Imprimer PDF" type="action" class="btn-primary"/>
+                </footer> -->
                  <chatter open_attachments="True"/>
             </form>
         </field>

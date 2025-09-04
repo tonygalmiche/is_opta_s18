@@ -18,9 +18,6 @@
                     .o_form_view .o_form_sheet_bg > .o_form_sheet{
                         max-width: 1800px;
                     }
-                    <!-- .o_form_label{
-                        white-space: nowrap;
-                    } -->
                 </style>
                 <header>
                     <button
@@ -79,51 +76,60 @@
                     />
                 </header>
                 <sheet class="width1800px">
-                    <group>
-                        <field name="code_long"/>
-                        <field name="nature_affaire"/>
-                    </group>
-                    <group>
-                        <group>
-                            <field name="partner_id"/>
-                            <field name="type_intervention_id"/>
-                            <field name="secteur_id"/>
-                            <field name="type_offre_id"/>
-                            <field name="fiscal_position_id"/>
-
-                        </group>
-                        <group>
-                            <field name="date_creation"/>
-                            <field name="createur_id"/>
-                            <field name="ca_previsionnel"/>
-                            <field name="jours_prevus"/>
-                            <field name="jours_realises"/>
-                            <field name="jours_consommes"/>
-                        </group>
-                    </group>
-                    <group>
-                        <field name="proposition_ids" widget="many2many_binary"/>
-                    </group>
-                    <group invisible="state not in ['offre_en_cours','offre_perdue']">
-                        <field name="cause_id"/>
-                        <field name="commentaire"/>
-                    </group>
-                    <group>
-                        <field name="date_signature"/>
-                    </group>
-                    <group>
-                        <field name="vendue_par_ids" nolabel="1">
-                            <list editable="bottom">
-                                <field name="user_id"/>
-                                <field name="repartition"/>
-                                <field name="commentaire"/>
-                            </list>
-                        </field>
-                    </group>
-                    <group  invisible="state not in ['affaire_gagnee']">
-                        <field name="activer_phases"/>
-                    </group>
+                    <div style="background:orange;font-size:11pt;font-weight: bold;padding-left:5px" invisible='alerte==False'>
+                        <field name="alerte" nolabel="1"/>
+                    </div>
                     <notebook>
+                        <page string="Entête">
+                            <group>
+                                <field name="code_long"/>
+                                <field name="nature_affaire"/>
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="partner_id"/>
+                                    <field name="type_intervention_id"/>
+                                    <field name="secteur_id"/>
+                                    <field name="type_offre_id"/>
+                                    <field name="fiscal_position_id"/>
+
+                                </group>
+                                <group>
+                                    <field name="date_creation"/>
+                                    <field name="createur_id"/>
+                                    <field name="ca_previsionnel"/>
+                                    <field name="total_facture_ht"/>
+                                    <field name="ecart_previsionnel_facture"/>
+                                    <field name="jours_prevus"/>
+                                    <field name="jours_realises"/>
+                                    <field name="jours_consommes"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="proposition_ids" widget="many2many_binary"/>
+                            </group>
+                            <group invisible="state not in ['offre_en_cours','offre_perdue']">
+                                <field name="relance_date"/>
+                                <field name="relance_commentaire"/>
+                                <field name="cause_id"/>
+                                <field name="commentaire"/>
+                            </group>
+                            <group>
+                                <field name="date_signature"/>
+                            </group>
+                            <group>
+                                <field name="vendue_par_ids" nolabel="1">
+                                    <list editable="bottom">
+                                        <field name="user_id"/>
+                                        <field name="repartition"/>
+                                        <field name="commentaire"/>
+                                    </list>
+                                </field>
+                            </group>
+                            <group  invisible="state not in ['affaire_gagnee']">
+                                <field name="activer_phases"/>
+                            </group>
+                        </page>
                         <page string="Affaire" invisible="state not in ['affaire_gagnee','affaire_soldee']">
                             <group string="Affaire">
                                 <group>
@@ -188,10 +194,13 @@
                                 </field>
                             </group>
                             <group>
+                                <button string="Recopier les phases dans les sous-phases" name="recopier_phases" type="object"/>
+                            </group>
+                            <group>
                                 <field name="activite_phase_ids" nolabel="1" >
                                     <list editable="bottom">
-                                        <button string="Activités de cette phase" name="acceder_activites_action" type="object" icon="fa-list"/>
-                                        <button string="Nouvelle activité"        name="creation_activite_action" type="object" icon="fa-plus"/>
+                                        <button title="Activités de cette phase" name="acceder_activites_action" type="object" icon="fa-list"/>
+                                        <button title="Nouvelle activité"        name="creation_activite_action" type="object" icon="fa-plus"/>
                                         <field name="affaire_phase_id" domain="[('affaire_id','=',parent.id)]"/>
                                         <field name="name"/>
                                         <field name="jours_prevus"    sum="Total"/>
@@ -340,10 +349,15 @@
                 <field name="type_offre_id"    optional="show"/>
                 <field name="secteur_id"       optional="show"/>
                 <field name="date_creation"    optional="show"/>
+
+                <field name="relance_date"        optional="hide"/>
+                <field name="relance_commentaire" optional="hide"/>
+
                 <field name="createur_id"      optional="show" widget="many2one_avatar_user" />
                 <field name="responsable_id"   optional="show" widget="many2one_avatar_user" />
-                <field name="ca_previsionnel"  optional="show" sum="Total"/>
-                <field name="total_facture_ht" optional="show" sum="Total"/>
+                <field name="ca_previsionnel"            optional="show" sum="Total"/>
+                <field name="total_facture_ht"           optional="show" sum="Total"/>
+                <field name="ecart_previsionnel_facture" optional="show" sum="Total"/>
                 <field 
                     name="state" widget="badge" 
                     decoration-warning="state=='offre_en_cours'" 
@@ -395,6 +409,8 @@
         <field name="arch" type="xml">
             <form>
                 <sheet>
+                    <field name="active" invisible="1"/>
+                    <widget name="web_ribbon" title="Archivé" bg_color="bg-danger" invisible="active==True"/>
                     <group>
                         <group>
                             <field name="name"/>
@@ -437,6 +453,8 @@
         <field name="arch" type="xml">
             <form>
                 <sheet>
+                    <field name="active" invisible="1"/>
+                    <widget name="web_ribbon" title="Archivé" bg_color="bg-danger" invisible="active==True"/>
                     <group>
                         <group>
                             <field name="name"/>

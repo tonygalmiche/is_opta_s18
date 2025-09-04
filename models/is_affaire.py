@@ -9,6 +9,33 @@ class IsTypeIntervention(models.Model):
     _order = 'name'
 
     name = fields.Char("Type d'intervention", required=True, index=True)
+    active = fields.Boolean("Actif", default=True)
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name') and vals.get('active', True):
+                domain = [
+                    ('name', '=', vals['name']),
+                    ('active', '=', True)
+                ]
+                if self.search_count(domain):
+                    raise ValidationError(_("Un type d'intervention actif avec ce nom existe déjà."))
+        return super().create(vals_list)
+
+    def write(self, vals):
+        if 'name' in vals or 'active' in vals:
+            name = vals.get('name', self.name)
+            active = vals.get('active', self.active)
+            if name and active:
+                domain = [
+                    ('name', '=', name),
+                    ('active', '=', True),
+                    ('id', '!=', self.id)
+                ]
+                if self.search_count(domain):
+                    raise ValidationError(_("Un type d'intervention actif avec ce nom existe déjà."))
+        return super().write(vals)
 
 
 class IsSecteur(models.Model):
@@ -16,7 +43,36 @@ class IsSecteur(models.Model):
     _description = "Secteur"
     _order = 'name'
 
-    name = fields.Char("Secteur", required=True, index=True)
+    name   = fields.Char("Secteur", required=True, index=True)
+    active = fields.Boolean("Actif", default=True)
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name') and vals.get('active', True):
+                domain = [
+                    ('name', '=', vals['name']),
+                    ('active', '=', True)
+                ]
+                if self.search_count(domain):
+                    raise ValidationError(_("Un secteur actif avec ce nom existe déjà."))
+        return super().create(vals_list)
+
+
+    def write(self, vals):
+        if 'name' in vals or 'active' in vals:
+            name = vals.get('name', self.name)
+            active = vals.get('active', self.active)
+            if name and active:
+                domain = [
+                    ('name', '=', name),
+                    ('active', '=', True),
+                    ('id', '!=', self.id)
+                ]
+                if self.search_count(domain):
+                    raise ValidationError(_("Un secteur actif avec ce nom existe déjà."))
+        return super().write(vals)
+
 
 
 class IsTypeOffre(models.Model):
@@ -356,52 +412,57 @@ class IsAffaire(models.Model):
             obj.total_facture_ttc  = total_facture_ttc
             obj.total_encaissement = total_encaissement
             obj.reste_encaissement = reste_encaissement
+            obj.ecart_previsionnel_facture = obj.ca_previsionnel - total_facture_ht
 
     name                 = fields.Char("Code affaire court", readonly=True, index=True)
     code_long            = fields.Char("Code affaire", compute='_compute', readonly=True, store=True, index=True)
-    nature_affaire       = fields.Char("Nature de l'affaire"      , required=True, readonly=False) # states={'offre_en_cours': [('readonly', False)],'affaire_gagnee': [('readonly', False)]})
-    partner_id           = fields.Many2one('res.partner', "Client", required=True, index=True,readonly=False, domain=[('customer','=',True),('is_company','=',True)]) # states={'offre_en_cours': [('readonly', False)]})
+    nature_affaire       = fields.Char("Nature de l'affaire"      , required=True, readonly=False, tracking=True) # states={'offre_en_cours': [('readonly', False)],'affaire_gagnee': [('readonly', False)]})
+    partner_id           = fields.Many2one('res.partner', "Client", required=True, tracking=True, index=True,readonly=False, domain=[('customer','=',True),('is_company','=',True)]) # states={'offre_en_cours': [('readonly', False)]})
     type_intervention_id = fields.Many2one('is.type.intervention', "Type d'intervention", 
-                                readonly=False) # states={'offre_en_cours': [('readonly', False)]})
+                                readonly=False, tracking=True) # states={'offre_en_cours': [('readonly', False)]})
     secteur_id           = fields.Many2one('is.secteur', "Secteur", help="Secteur ou Type de politique publique",
-                                readonly=False) # states={'offre_en_cours': [('readonly', False)]})
+                                readonly=False, tracking=True) # states={'offre_en_cours': [('readonly', False)]})
     type_offre_id        = fields.Many2one('is.type.offre', "Type d'offre",
-                                readonly=False) # states={'offre_en_cours': [('readonly', False)]})
+                                readonly=False, tracking=True) # states={'offre_en_cours': [('readonly', False)]})
     date_creation        = fields.Date("Date de création", default=lambda *a: fields.Date.today(),
-                                readonly=False) # states={'offre_en_cours': [('readonly', False)]})
+                                readonly=False, tracking=True) # states={'offre_en_cours': [('readonly', False)]})
     annee_creation       = fields.Char("Année", compute='_compute', readonly=True, store=True)
-    createur_id          = fields.Many2one('res.users', "Créateur", default=lambda self: self.env.user, readonly=False) # states={'offre_en_cours': [('readonly', False)]})
-    ca_previsionnel      = fields.Float("CA prévisionnel / Vendu", digits=(14,2), readonly=False) # states={'offre_en_cours': [('readonly', False)]})
-    montant_realise      = fields.Float("Montant réalisé"        , digits=(14,2), compute='_compute_realise', readonly=True, store=False)
-    montant_restant      = fields.Float("Montant restant"        , digits=(14,2), compute='_compute_realise', readonly=True, store=False)
-    jours_prevus         = fields.Float("Nb jours prévus"   , digits=(14,2), readonly=False) # states={'offre_en_cours': [('readonly', False)]})
+    createur_id          = fields.Many2one('res.users', "Créateur", default=lambda self: self.env.user, readonly=False, tracking=True) # states={'offre_en_cours': [('readonly', False)]})
+    ca_previsionnel      = fields.Float("CA prévisionnel", digits=(14,2), readonly=False, tracking=True) # states={'offre_en_cours': [('readonly', False)]})
+    montant_realise      = fields.Float("Montant réalisé"        , digits=(14,2), tracking=True, compute='_compute_realise', readonly=True, store=False)
+    montant_restant      = fields.Float("Montant restant"        , digits=(14,2), tracking=True, compute='_compute_realise', readonly=True, store=False)
+    jours_prevus         = fields.Float("Nb jours prévus"   , digits=(14,2), tracking=True, readonly=False) # states={'offre_en_cours': [('readonly', False)]})
     jours_consommes      = fields.Float("Nb jours consommés", digits=(14,2), compute='_compute_realise', readonly=True, store=False,help="Jours facturables des activités")
     jours_realises       = fields.Float("Nb jours réalisés" , digits=(14,2), compute='_compute_realise', readonly=True, store=False,help="Jours réalisés des activités")
     fiscal_position_id   = fields.Many2one('account.fiscal.position', "Position fiscale",
-                                readonly=False) # states={'offre_en_cours': [('readonly', False)]})
+                                readonly=False, tracking=True) # states={'offre_en_cours': [('readonly', False)]})
     proposition_ids      = fields.Many2many('ir.attachment', 'is_affaire_propositions_rel', 'doc_id', 'file_id', 'Propositions commerciales')
-    cause_id             = fields.Many2one('is.cause', "Cause si offre perdue")
-    commentaire          = fields.Char("Commentaire si offre perdue")
-    date_signature       = fields.Date("Date de signature de l'affaire")
-    date_solde           = fields.Date("Date de solde de l'affaire")
+
+    relance_date         = fields.Date("Relance commerciale", tracking=True)
+    relance_commentaire  = fields.Text("Commentaire relance commerciale", tracking=True)
+
+    cause_id             = fields.Many2one('is.cause', "Cause si offre perdue", tracking=True)
+    commentaire          = fields.Char("Commentaire si offre perdue", tracking=True)
+    date_signature       = fields.Date("Date de signature de l'affaire", tracking=True)
+    date_solde           = fields.Date("Date de solde de l'affaire", tracking=True)
     vendue_par_ids       = fields.One2many('is.affaire.vendue.par', 'affaire_id', 'Affaire vendue par')
-    responsable_id       = fields.Many2one('res.users', "Responsable de l'affaire")
+    responsable_id       = fields.Many2one('res.users', "Responsable de l'affaire", tracking=True)
 
     nature_frais = fields.Selection([
             ('frais_inclus' , 'Frais inclus'),
             ('forfait'      , 'Forfait'),
             ('au_reel'      , 'Au réel'),
             ('reel_plafonne', 'Réel plafonné')
-        ], "Nature des frais",)
+        ], "Nature des frais", tracking=True)
     forfait_jours_ids  = fields.One2many('is.affaire.forfait.jour', 'affaire_id', ' Forfait frais jour')
 
-    correspondant_id = fields.Many2one('res.partner', "Correspondant facturation")
+    correspondant_id = fields.Many2one('res.partner', "Correspondant facturation", tracking=True)
     state                = fields.Selection([
             ('offre_en_cours', 'Offre en cours'),
             ('affaire_gagnee', 'Affaire gagnée'),
             ('affaire_soldee', 'Affaire soldée'),
             ('offre_perdue'  , 'Offre perdue')
-        ], "État", index=True, default='offre_en_cours')
+        ], "État", index=True, default='offre_en_cours', tracking=True)
     taux_ids           = fields.One2many('is.affaire.taux.journalier', 'affaire_id', ' Taux journalier')
 
 
@@ -409,7 +470,7 @@ class IsAffaire(models.Model):
     consultant_ids     = fields.Many2many('res.users','is_affaire_consultant_rel','affaire_id','consultant_id', string="Consultants liés à cette affaire", compute='_compute_consultant_ids', readonly=True, store=True)
 
     convention_ids     = fields.Many2many('ir.attachment', 'is_affaire_convention_rel', 'doc_id', 'file_id', 'Conventions / Contrats')
-    activer_phases     = fields.Boolean("Activer la gestion des phases", default=False)
+    activer_phases     = fields.Boolean("Activer la gestion des phases", default=False, tracking=True)
     phase_ids          = fields.One2many('is.affaire.phase', 'affaire_id', 'Phases')
     activite_phase_ids = fields.One2many('is.affaire.phase.activite', 'affaire_id', 'Sous-phases')
     activite_ids       = fields.One2many('is.activite', 'affaire_id', 'Activités')
@@ -423,9 +484,30 @@ class IsAffaire(models.Model):
     total_facture_ttc  = fields.Float('Total facturé TTC' , digits=(14,2), compute='_compute_total_facure', readonly=True, store=False)
     total_encaissement = fields.Float('Total encaissement', digits=(14,2), compute='_compute_total_facure', readonly=True, store=False)
     reste_encaissement = fields.Float('Reste à encaisser' , digits=(14,2), compute='_compute_total_facure', readonly=True, store=False)
+    ecart_previsionnel_facture = fields.Float("Ecart prévisionnel-facturé", digits=(14,2), compute='_compute_total_facure', readonly=True, store=False)
+
     is_dynacase_ids    = fields.Many2many('is.dynacase', 'is_affaire_dynacase_rel', 'doc_id', 'dynacase_id', 'Ids Dynacase', readonly=True)
-    active             = fields.Boolean("Affaire active", default=True)
-    rec_name           = fields.Char("Nom de l'activité", compute='_compute_rec_name', readonly=True, store=True)
+    active             = fields.Boolean("Affaire active", default=True, tracking=True)
+    rec_name           = fields.Char("Nom de l'activité", compute='_compute_rec_name', readonly=True, store=True, tracking=True)
+    alerte             = fields.Text("Alerte", compute='_compute_alerte', readonly=True, store=False)
+
+
+    @api.depends('convention_ids','proposition_ids')
+    def _compute_alerte(self):
+        for obj in self:
+            alerte=[]
+            if obj.state=='affaire_gagnee':
+                if len(obj.convention_ids)==0:
+                    alerte.append("Il manque les documents 'Conventions / Contrats'")
+                if len(obj.proposition_ids)==0:
+                    alerte.append("Il manque les documents 'Propositions commerciales'")
+            if len(alerte)==0:
+                alerte=False
+            else:
+                alerte = '\n'.join(alerte)
+            obj.alerte = alerte
+
+
 
 
 
@@ -435,6 +517,13 @@ class IsAffaire(models.Model):
             name="[%s] %s (%s)"%(obj.code_long,obj.nature_affaire,obj.partner_id.name)
             obj.rec_name = name
 
+
+    @api.onchange('partner_id')
+    def _onchange_partner_id(self):
+        secteur_id = False
+        if self.partner_id:
+            secteur_id = self.partner_id.is_secteur_id.id
+        self.secteur_id = secteur_id
 
 
     # TODO : name_get ne fonctionne plus avec Odoo 18, il faut créer un champ calculé rec_name
@@ -575,5 +664,21 @@ class IsAffaire(models.Model):
             }
             return res
 
-# {'search_default_out_invoice': 1, 'default_move_type': 'out_invoice'}
-# [('move_type', 'in', ['out_invoice', 'out_refund'])]
+
+
+    def recopier_phases(self):
+        for obj in self:
+            for phase in obj.phase_ids:
+                # Vérifie si une sous-phase existe déjà pour cette phase
+                sous_phases = self.env['is.affaire.phase.activite'].search([
+                    ('affaire_phase_id', '=', phase.id),
+                    ('affaire_id', '=', obj.id)
+                ])
+                if not sous_phases:
+                    self.env['is.affaire.phase.activite'].create({
+                        'affaire_id': obj.id,
+                        'affaire_phase_id': phase.id,
+                        'name': phase.name,
+                        'jours_prevus': phase.jours_prevus,
+                        'montant_vendu': 0.0,  # ou phase.montant si disponible
+                    })

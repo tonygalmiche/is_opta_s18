@@ -91,6 +91,7 @@ class IsFrais(models.Model):
 
 
     chrono           = fields.Char("Chrono", readonly=True, index=True)
+    company_id       = fields.Many2one('res.company', string='Société', default=lambda self: self.env.company, index=True, required=True)
     chrono_long      = fields.Char("Chrono long", compute='compute_chrono', readonly=True, store=True)
     createur_id      = fields.Many2one('res.users', "Créateur", required=True, default=lambda self: self.env.user)
     login            = fields.Char("Login" , compute='compute_chrono', readonly=True, store=True)
@@ -135,6 +136,8 @@ class IsFrais(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
+            # Assure la société par défaut si non fournie
+            vals.setdefault('company_id', self.env.company.id)
             if 'activite_id' in vals:
                 activite_id=vals['activite_id']
                 affaire_id=self.env['is.activite'].browse(activite_id).affaire_id.id
