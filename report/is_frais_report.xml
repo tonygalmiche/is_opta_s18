@@ -156,11 +156,11 @@
         <t t-foreach="doc.justificatif_ids" t-as="att">
                 <li>
                   <span t-out="att.name"/>
-                  <t t-if="att.mimetype and att.mimetype.startswith('image/')">
+                  <!-- <t t-if="att.mimetype and att.mimetype.startswith('image/')">
                     <div style="margin:2mm 0">
                       <img t-att-src="image_data_uri(att.datas)" style="max-height:60mm"/>
                     </div>
-                  </t>
+                  </t> -->
                 </li>
               </t>
             </ul>
