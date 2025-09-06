@@ -27,3 +27,5 @@ class ResPartner(models.Model):
 
     is_secteur_id  = fields.Many2one('is.secteur', "Secteur", help="Secteur ou Type de politique publique", tracking=True)
     is_code_client = fields.Char("Code client", tracking=True)
+
+    is_type_depense_id = fields.Many2one('product.product', 'Type de dépense', domain=[('is_type_intervenant','=',False)], help="Valeur par défaut pour les lignes des frais")

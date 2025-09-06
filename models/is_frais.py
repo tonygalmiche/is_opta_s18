@@ -33,17 +33,23 @@ class IsFraisLigne(models.Model):
             ('non', u'Non'),
         ], u"Justificatif joint", index=True, default='oui')
 
-
     def copie_frais_action(self):
         for obj in self:
             obj.copy()
+
+    @api.onchange('partner_id')
+    def onchange_partner_idd(self):
+        product_id = False
+        if self.partner_id:
+            product_id = self.partner_id.is_type_depense_id.id
+        self.product_id = product_id
 
 
 class IsFrais(models.Model):
     _name = 'is.frais'
     _inherit = ['portal.mixin', 'mail.thread', 'mail.activity.mixin']
     _description = "Frais"
-    _order = 'chrono desc'
+    _order = 'date_creation desc'
     _rec_name = 'rec_name'
 
 
@@ -65,10 +71,6 @@ class IsFrais(models.Model):
             total_refacturable = 0
             if obj.frais_forfait:
                 total_refacturable = obj.nb_jours*obj.montant_forfait
-
-            print(obj.frais_forfait,total_refacturable)
-
-
             total_frais           = 0
             total_tva_recuperable = 0
             for l in obj.ligne_ids:
@@ -90,40 +92,39 @@ class IsFrais(models.Model):
             self.montant_forfait = self.forfait_jour_id.montant
 
 
-    chrono           = fields.Char("Chrono", readonly=True, index=True)
-    company_id       = fields.Many2one('res.company', string='Société', default=lambda self: self.env.company, index=True, required=True)
-    chrono_long      = fields.Char("Chrono long", compute='compute_chrono', readonly=True, store=True)
-    createur_id      = fields.Many2one('res.users', "Créateur", required=True, default=lambda self: self.env.user)
+    chrono           = fields.Char("Chrono", readonly=True, index=True,tracking=True)
+    chrono_long      = fields.Char("Chrono long", compute='compute_chrono', readonly=True, store=True,tracking=True)
+    createur_id      = fields.Many2one('res.users', "Créateur", required=True, default=lambda self: self.env.user,tracking=True)
     login            = fields.Char("Login" , compute='compute_chrono', readonly=True, store=True)
-    date_creation    = fields.Date("Date de création", required=True, index=True, default=lambda *a: fields.Date.today())
-    mois_creation    = fields.Char("Mois" , compute='compute_chrono', readonly=True, store=True)
-    annee_creation   = fields.Char("Année", compute='compute_chrono', readonly=True, store=True)
-    affaire_id       = fields.Many2one('is.affaire' , 'Affaire' , required=False)
-    activite_id      = fields.Many2one('is.activite', 'Activite', required=True)
+    date_creation    = fields.Date("Date de création", required=True, index=True, default=lambda *a: fields.Date.today(),tracking=True)
+    mois_creation    = fields.Char("Mois" , compute='compute_chrono', readonly=True, store=True,tracking=True)
+    annee_creation   = fields.Char("Année", compute='compute_chrono', readonly=True, store=True,tracking=True)
+    affaire_id       = fields.Many2one('is.affaire' , 'Affaire' , required=False,tracking=True)
+    activite_id      = fields.Many2one('is.activite', 'Activite', required=True,tracking=True)
     type_activite    = fields.Selection([
             ('formation', u'Formation'),
             ('conseil'  , u'Conseil'),
             ('divers'   , u'Divers'),
-        ], u"Type d'activité", index=True, required=True)
-    frais_forfait    = fields.Boolean("Frais au forfait",default=False)
-    nb_jours         = fields.Float("Nb jours (si frais au forfait)", digits=(14,2))
-    forfait_jour_id  = fields.Many2one('is.affaire.forfait.jour', "Forfait jour de l'affaire")
-    montant_forfait  = fields.Float("Montant forfait", digits=(14,2))
-    parcours         = fields.Text("Parcours")
-    dates            = fields.Char("Dates")
+        ], u"Type d'activité", index=True, required=True,tracking=True)
+    frais_forfait    = fields.Boolean("Frais au forfait",default=False,tracking=True)
+    nb_jours         = fields.Float("Nb jours (si frais au forfait)", digits=(14,2),tracking=True)
+    forfait_jour_id  = fields.Many2one('is.affaire.forfait.jour', "Forfait jour de l'affaire",tracking=True)
+    montant_forfait  = fields.Float("Montant forfait", digits=(14,2),tracking=True)
+    parcours         = fields.Text("Parcours",tracking=True)
+    dates            = fields.Char("Dates",tracking=True)
     ligne_ids        = fields.One2many('is.frais.lignes', 'frais_id', u'Lignes')
     justificatif_ids = fields.Many2many('ir.attachment', 'is_frais_justificatif_rel', 'doc_id', 'file_id', 'Justificatifs')
-    total_consultant      = fields.Float("Total TTC Consultant à rembourser", digits=(14,2), compute='_compute_total', readonly=True, store=True)
-    total_refacturable    = fields.Float("Total TTC refacturable"           , digits=(14,2), compute='_compute_total', readonly=True, store=True)
-    total_frais           = fields.Float("Total TTC de tous les frais"      , digits=(14,2), compute='_compute_total', readonly=True, store=True)
-    total_tva_recuperable = fields.Float("Total TVA récupérable"            , digits=(14,2), compute='_compute_total', readonly=True, store=True)
+    total_consultant      = fields.Float("Total TTC Consultant à rembourser", digits=(14,2), compute='_compute_total', readonly=True, store=True,tracking=True)
+    total_refacturable    = fields.Float("Total TTC refacturable"           , digits=(14,2), compute='_compute_total', readonly=True, store=True,tracking=True)
+    total_frais           = fields.Float("Total TTC de tous les frais"      , digits=(14,2), compute='_compute_total', readonly=True, store=True,tracking=True)
+    total_tva_recuperable = fields.Float("Total TVA récupérable"            , digits=(14,2), compute='_compute_total', readonly=True, store=True,tracking=True)
     state = fields.Selection([
             ('brouillon', u'Brouillon'),
             ('diffuse'  , u'Diffusé'),
             ('valide'   , u'Validé'),
-        ], u"État", index=True, default='brouillon')
+        ], u"État", index=True, default='brouillon',tracking=True)
     is_dynacase_ids = fields.Many2many('is.dynacase', 'is_frais_dynacase_rel', 'doc_id', 'dynacase_id', 'Ids Dynacase', readonly=True)
-    rec_name = fields.Char("Nom du document", compute='_compute_rec_name', readonly=True, store=True)
+    rec_name = fields.Char("Nom du document", compute='_compute_rec_name', readonly=True, store=True,tracking=True)
 
 
     @api.depends('login','mois_creation','chrono')
@@ -136,8 +137,6 @@ class IsFrais(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            # Assure la société par défaut si non fournie
-            vals.setdefault('company_id', self.env.company.id)
             if 'activite_id' in vals:
                 activite_id=vals['activite_id']
                 affaire_id=self.env['is.activite'].browse(activite_id).affaire_id.id

@@ -18,6 +18,7 @@ InfoSaône - Module Odoo 18 pour Opta-S / SGP
         'mail',
         'web',
         'web_chatter_position',
+        'crm',
     ],
     'data' : [
         'security/res.groups.xml',

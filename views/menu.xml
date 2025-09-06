@@ -4,7 +4,7 @@
 
     
    <record id="is_crm_main_menu" model="ir.ui.menu" >
-        <field name="name">CRM</field>
+        <field name="name">CRM Opta-S</field>
         <field name="sequence">1</field>
         <field name="groups_id" eval="[(6,0,[
             ref('is_administratif_group'),
@@ -323,4 +323,16 @@
 
 
 
+    <!-- Masquer les menus de base inutilisés -->
+    <menuitem id="spreadsheet_dashboard.spreadsheet_dashboard_menu_root" parent="base.menu_custom"/>
+    <menuitem id="mail.menu_root_discuss" parent="base.menu_custom"/>
+    <menuitem id="utm.menu_link_tracker_root" parent="base.menu_custom"/>
+    <menuitem id="calendar.mail_menu_calendar" parent="base.menu_custom"/>
+    <menuitem id="contacts.menu_contacts" parent="base.menu_custom"/>
+
+
+    <!-- Renommer le menu CRM par défaut du module crm => Cela ne fonctionne pas -->
+    <record id="crm.crm_menu_root" model="ir.ui.menu">
+        <field name="name">CRM Odoo</field>
+    </record>
 </odoo>

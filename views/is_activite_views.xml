@@ -147,18 +147,22 @@
                             nolabel="1"
                         >
                             <list>
-                                <button string="Frais" name="acceder_frais_action" type="object" icon="fa-search-plus"/>
-                                <field name="chrono_long"/>
-                                <field name="date_creation"/>
-                                <field name="createur_id"/>
-                                <field name="activite_id"/>
-                                <field name="affaire_id"/>
-                                <field name="type_activite"/>
-                                <field name="frais_forfait"/>
-                                <field name="nb_jours"/>
-                                <field name="montant_forfait"/>
-                                <field name="parcours"/>
-                                <field name="dates"/>
+                                <button title="Frais" name="acceder_frais_action" type="object" icon="fa-search-plus"/>
+                                <field name="chrono_long"     optional="show"/>
+                                <field name="date_creation"   optional="show"/>
+                                <field name="createur_id"     optional="show"/>
+                                <field name="activite_id"     optional="hide"/>
+                                <field name="affaire_id"      optional="hide"/>
+                                <field name="type_activite"   optional="show"/>
+                                <field name="frais_forfait"   optional="hide"/>
+                                <field name="nb_jours"        optional="hide"/>
+                                <field name="montant_forfait" optional="hide"/>
+                                <field name="parcours"        optional="show"/>
+                                <field name="dates"           optional="show"/>
+                                <field name="total_consultant"      optional="show" sum="Total"/>
+                                <field name="total_refacturable"    optional="show" sum="Total"/>
+                                <field name="total_frais"           optional="show" sum="Total"/>
+                                <field name="total_tva_recuperable" optional="show" sum="Total"/>
                             </list>
                             <form>
                                 <group>

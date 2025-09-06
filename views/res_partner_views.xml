@@ -8,6 +8,7 @@
             <xpath expr="//div[hasclass('o_address_format')]" position="after">
                 <field name="is_code_client"/>
                 <field name="is_secteur_id"/>
+                <field name="is_type_depense_id"/>
             </xpath>
             <field name="website" position="before">
                 <field name="is_type_societe_id" invisible="is_company == False"/>
@@ -39,6 +40,7 @@
             <field name="email" position="after">
                 <field name="is_type_societe_id"              optional="show"/>
                 <field name="is_secteur_id"                   optional="show"/>
+                <field name="is_type_depense_id"              optional="hide"/>
                 <field name="is_evaluation"                   optional="show"/>
                 <field name="property_account_receivable_id"  optional="hide"/>
                 <field name="is_compte_auxilaire_client"      optional="hide"/>

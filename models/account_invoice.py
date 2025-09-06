@@ -311,7 +311,6 @@ class AccountInvoice(models.Model):
             """
 
 
-
             if obj.is_phase:
                 #Recherche des phases et sous-phases à afficher ****************
                 phase_ids=[]
@@ -344,9 +343,6 @@ class AccountInvoice(models.Model):
             html+='</tbody>'
             html+='</table>'
             res=Markup(html)
-
-
-
             return res
 
 

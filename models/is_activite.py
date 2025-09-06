@@ -129,42 +129,67 @@ class IsActivite(models.Model):
         self.partner_id = self.affaire_id.partner_id.id
 
 
-    affaire_id             = fields.Many2one('is.affaire', 'Affaire', required=True,index=True)
-    responsable_id         = fields.Many2one('res.users', "Responsable de l'affaire", compute='_compute_responsable_id', readonly=True, store=True)
-    partner_id             = fields.Many2one('res.partner', "Client facturable", required=True, index=True, domain=[('customer','=',True)])
-    phase_activite_id      = fields.Many2one('is.affaire.phase.activite', 'Sous-phase',index=True)
-    nature_activite        = fields.Char("Nature de l'activité"     , required=True, index=True)
-    date_debut             = fields.Date("Date de début de l'activité", required=True, index=True)
-    dates_intervention     = fields.Char("Dates des jours d'intervention")
-    intervenant_id         = fields.Many2one('is.affaire.intervenant', "Intervenant Affaire", required=True,index=True)
-    intervenant_product_id = fields.Many2one('product.product', "Intervenant", compute='_compute_product_id', readonly=True, store=True)
-    tarification_id        = fields.Many2one('is.affaire.taux.journalier', "Tarification")
-    montant                = fields.Float("Montant unitaire", compute='_compute', readonly=True, store=True, digits=(14,2))
+    affaire_id             = fields.Many2one('is.affaire', 'Affaire', required=True,index=True,tracking=True)
+    responsable_id         = fields.Many2one('res.users', "Responsable de l'affaire", compute='_compute_responsable_id',tracking=True, readonly=True, store=True)
+    partner_id             = fields.Many2one('res.partner', "Client facturable",tracking=True, required=True, index=True, domain=[('customer','=',True)])
+    phase_activite_id      = fields.Many2one('is.affaire.phase.activite', 'Sous-phase',index=True,tracking=True)
+    nature_activite        = fields.Char("Nature de l'activité"     , required=True, index=True,tracking=True)
+    date_debut             = fields.Date("Date de début de l'activité", required=True, index=True,tracking=True)
+    dates_intervention     = fields.Char("Dates des jours d'intervention",tracking=True)
 
-    nb_realise             = fields.Float("Nb unités réalisées"  , digits=(14,4))
+
+    def _default_intervenant(self):
+        """Par défaut, sélectionne l'intervenant lié à l'utilisateur courant,
+        et si une affaire est dans le contexte, limite à cette affaire."""
+        uid = self.env.uid
+        domain = [('intervenant_id.is_consultant_id', '=', uid)]
+        affaire_id = self.env.context.get('default_affaire_id')
+        if affaire_id:
+            domain.append(('affaire_id', '=', affaire_id))
+        return self.env['is.affaire.intervenant'].search(domain, limit=1).id
+
+    intervenant_id = fields.Many2one(
+        'is.affaire.intervenant',
+        "Intervenant Affaire",
+        required=True,
+        index=True,
+        tracking=True,
+        default=_default_intervenant
+    )
+
+
+    intervenant_product_id = fields.Many2one('product.product', "Intervenant", compute='_compute_product_id', readonly=True, store=True,tracking=True)
+    tarification_id        = fields.Many2one('is.affaire.taux.journalier', "Tarification",tracking=True)
+    montant                = fields.Float("Montant unitaire", compute='_compute', readonly=True, store=True, digits=(14,2),tracking=True)
+
+    nb_realise             = fields.Float("Nb unités réalisées"  , digits=(14,3),tracking=True)
     nb_realise_auto        = fields.Float("Nb unités réalisées (auto)", digits=(14,2), compute='_compute_nb_realise_auto', readonly=True, store=False)
     nb_realise_vsb         = fields.Boolean("Nb unités réalisées visibility", compute='_compute_nb_realise_vsb', readonly=True, store=False)
 
-    nb_facturable          = fields.Float("Nb unités facturables", digits=(14,4))
-    jours_consommes        = fields.Float("Nb jours consommés", digits=(14,2), compute='_compute_jours_consommes', readonly=True, store=True)
-    jours_realises         = fields.Float("Nb jours réalisés" , digits=(14,2), compute='_compute_jours_realises' , readonly=True, store=True)
-    total_facturable       = fields.Float("Total facturable", compute='_compute', readonly=True, store=True, digits=(14,2))
+    nb_facturable          = fields.Float("Nb unités facturables", digits=(14,3),tracking=True)
+    jours_consommes        = fields.Float("Nb jours consommés", digits=(14,2), compute='_compute_jours_consommes', readonly=True, store=True,tracking=True)
+    jours_realises         = fields.Float("Nb jours réalisés" , digits=(14,2), compute='_compute_jours_realises' , readonly=True, store=True,tracking=True)
+    total_facturable       = fields.Float("Total facturable", compute='_compute', readonly=True, store=True, digits=(14,2),tracking=True)
     nb_stagiaires          = fields.Float("Nombre de stagiaires calculé", compute='_compute_nb_stagiaires', readonly=True, store=False, digits=(14,1))
-    facture_sur_accompte   = fields.Boolean("Facture sur acompte")
-    non_facturable         = fields.Boolean("Activité non facturable", default=False, help="Si cette case est cochée, cette activité ne sera pas proposée à la facturation")
-    point_cle              = fields.Text("Points clés de l'activité réalisée")
+    facture_sur_accompte   = fields.Boolean("Facture sur acompte",tracking=True)
+    non_facturable         = fields.Boolean("Activité non facturable", default=False,tracking=True, help="Si cette case est cochée, cette activité ne sera pas proposée à la facturation")
+    point_cle              = fields.Text("Points clés de l'activité réalisée",tracking=True)
     suivi_temps_ids        = fields.One2many('is.suivi.temps', 'activite_id', u'Suivi du temps')
     frais_ids              = fields.One2many('is.frais', 'activite_id', u'Frais')
     pieces_jointes_ids     = fields.Many2many('ir.attachment', 'is_activite_pieces_jointes_rel', 'doc_id', 'file_id', u'Pièces jointes')
-    invoice_id             = fields.Many2one('account.move', "Facture",index=True, copy=False)
+    invoice_id             = fields.Many2one('account.move', "Facture",index=True, copy=False,tracking=True)
     state                  = fields.Selection([
             ('brouillon', u'Brouillon'),
             ('diffuse'  , u'Diffusé'),
             ('valide'   , u'Validé'),
-        ], u"État", index=True, default='brouillon')
+        ], u"État", index=True, default='brouillon',tracking=True)
     is_dynacase_ids = fields.Many2many('is.dynacase', 'is_activite_dynacase_rel', 'doc_id', 'dynacase_id', 'Ids Dynacase', readonly=True)
-    active          = fields.Boolean("Activité active", default=True)
-    rec_name       = fields.Char("Nom de l'activité", compute='_compute_rec_name', readonly=True, store=True)
+    active          = fields.Boolean("Activité active", default=True,tracking=True)
+    rec_name       = fields.Char("Nom de l'activité", compute='_compute_rec_name', readonly=True, store=True,tracking=True)
+
+
+
+
 
 
 

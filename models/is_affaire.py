@@ -203,6 +203,8 @@ class IsAffaireIntervenant(models.Model):
 
     affaire_id  = fields.Many2one('is.affaire', 'Affaire', required=True, ondelete='cascade')
     intervenant_id = fields.Many2one('product.product', "Intervenant", domain=[('is_type_intervenant','!=',False)], required=True)
+    # Champ related pour compatibilité (utilisateur lié au produit intervenant)
+    user_id = fields.Many2one('res.users', string="Utilisateur", related='intervenant_id.is_consultant_id', store=False, readonly=True)
     type_intervenant = fields.Selection([
             ('consultant'   , 'Consultant'),
             ('co-traitant'  , 'Co-traitant'),
@@ -468,6 +470,8 @@ class IsAffaire(models.Model):
 
     intervenant_ids    = fields.One2many('is.affaire.intervenant', 'affaire_id', "Intervenants liés à l'affaire")
     consultant_ids     = fields.Many2many('res.users','is_affaire_consultant_rel','affaire_id','consultant_id', string="Consultants liés à cette affaire", compute='_compute_consultant_ids', readonly=True, store=True)
+    # Indique si l'utilisateur connecté fait partie des intervenants de l'affaire
+    user_is_intervenant = fields.Boolean("L'utilisateur est intervenant", compute='_compute_user_is_intervenant', readonly=True, store=False)
 
     convention_ids     = fields.Many2many('ir.attachment', 'is_affaire_convention_rel', 'doc_id', 'file_id', 'Conventions / Contrats')
     activer_phases     = fields.Boolean("Activer la gestion des phases", default=False, tracking=True)
@@ -517,6 +521,13 @@ class IsAffaire(models.Model):
             name="[%s] %s (%s)"%(obj.code_long,obj.nature_affaire,obj.partner_id.name)
             obj.rec_name = name
 
+    @api.depends('consultant_ids')
+    def _compute_user_is_intervenant(self):
+        current_user_id = self.env.user.id
+        for obj in self:
+            # Est vrai si l'utilisateur courant est dans la liste des consultants/intervenants
+            obj.user_is_intervenant = current_user_id in obj.consultant_ids.ids
+
 
     @api.onchange('partner_id')
     def _onchange_partner_id(self):
@@ -556,7 +567,11 @@ class IsAffaire(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             vals['name'] = self.env['ir.sequence'].next_by_code('is.affaire')
-        return super().create(vals_list)
+        records = super().create(vals_list)
+        # Normaliser les attachments ajoutés à la création (proposition_ids / convention_ids)
+        for rec in records:
+            rec._link_attachments_to_self()
+        return records
 
 
 
@@ -583,6 +598,43 @@ class IsAffaire(models.Model):
                 'message_type'  : 'comment',
             }
             email=self.env['mail.mail'].create(vals)
+
+    # -- Attachments helpers -------------------------------------------------
+    def _link_attachments_to_self(self):
+        """Assure que les pièces jointes liées via les M2M ont res_model/res_id.
+        Utile pour les widgets many2many_binary qui peuvent créer des attachments
+        orphelins (res_id = 0/null) si le contexte n'est pas complet.
+        """
+        for obj in self:
+            for m2m_field in ('proposition_ids', 'convention_ids'):
+                atts = obj[m2m_field]
+                # Ne corriger que les PJ orphelines (res_id vide/0) ou sans res_model
+                to_fix = atts.filtered(lambda a: (not a.res_id or a.res_id == 0) or not a.res_model)
+                if to_fix:
+                    to_fix.write({'res_model': self._name, 'res_id': obj.id})
+
+    def write(self, vals):
+        res = super().write(vals)
+        # Si des M2M ont pu être modifiés, normaliser.
+        fields_touched = set(vals.keys())
+        if {'proposition_ids', 'convention_ids'} & fields_touched:
+            self._link_attachments_to_self()
+        return res
+
+    def action_reparer_attachments(self):
+        """Action serveur pour réparer les PJ: force res_model/res_id = is.affaire / id
+        pour toutes les PJ liées via propositions/conventions et sans res_id.
+        """
+        self._link_attachments_to_self()
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Réparation terminée'),
+                'message': _('Les pièces jointes ont été normalisées (res_model/res_id).'),
+                'sticky': False,
+            }
+        }
 
     def vers_affaire_gagnee(self):
         for obj in self:
