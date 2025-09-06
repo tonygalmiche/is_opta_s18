@@ -18,7 +18,8 @@
     <template id="is_frais_document">
       <t t-call="web.html_container">
         <t t-foreach="docs" t-as="doc">
-        <t t-set="company" t-value="doc.company_id or doc.env.company"/>
+        <!-- <t t-set="company" t-value="doc.company_id or doc.env.company"/> -->
+        <t t-set="company" t-value="doc.env.company"/>
         <t t-set="o" t-value="doc"/>
         <t t-call="web.external_layout">
         <div class="page">
@@ -60,6 +61,8 @@
             }
           </style>
 
+          <br />
+          <br />
           <h2 class="title">Fiche de frais <span t-out="doc.chrono_long"/></h2>
 
           <div class="row">

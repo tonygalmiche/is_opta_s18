@@ -125,6 +125,7 @@ class IsFrais(models.Model):
         ], u"État", index=True, default='brouillon',tracking=True)
     is_dynacase_ids = fields.Many2many('is.dynacase', 'is_frais_dynacase_rel', 'doc_id', 'dynacase_id', 'Ids Dynacase', readonly=True)
     rec_name = fields.Char("Nom du document", compute='_compute_rec_name', readonly=True, store=True,tracking=True)
+    company_id = fields.Many2one('res.company', 'Société',required=True,default=lambda self: self.env.user.company_id.id)
 
 
     @api.depends('login','mois_creation','chrono')
