@@ -215,7 +215,7 @@ class AccountInvoice(models.Model):
                             'is_activite_id'       : act.id,
                             'is_frais_id'          : frais.id,
                         }
-                        line=self.env['account.invoice.line'].create(vals)
+                        line=self.env['account.move.line'].create(vals)
                         #line._onchange_product_id()
                         line.quantity   = frais.nb_jours
                         line.price_unit = frais.montant_forfait
