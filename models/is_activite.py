@@ -222,7 +222,7 @@ class IsActivite(models.Model):
                         body_html=u"""
                             <p>Bonjour,</p>
                             <p>Pour information, """+nom+""" vient de modifier votre activité <a href='"""+url+"""'>"""+obj.nature_activite+"""</a>.</p>
-                            <p>Affaire : <a href='"""+url_affaire+"""'>"""+obj.affaire_id.name_get()[0][1]+"""</a>.</p>
+                            <p>Affaire : <a href='"""+url_affaire+"""'>"""+obj.affaire_id.rec_name+"""</a>.</p>
                         """
                         self.envoi_mail(email_from,email_to,subject,body_html)
                 #***************************************************************
