@@ -64,3 +64,22 @@
 .form_is_affaire th:not([data-name="phase_activite_id"]):not([data-name="nature_activite"])  {
     width: auto !important;
 }
+
+
+// Pour les en-têtes de tableaux dans les vues one2many et many2many
+.o_form_view .o_field_one2many .o_list_table th,
+.o_form_view .o_field_many2many .o_list_table th {
+    background-color: #e8e4f3 !important;
+}
+
+// Onglet actif du notebook avec le même violet
+.o_form_view .o_notebook .nav-link.active {
+    background-color: #e8e4f3 !important;
+    border-color: #e8e4f3 !important;
+}
+
+// Styles spécifiques pour les onglets du formulaire
+.o_notebook .nav-link {
+    border-color: #dee2e6 !important;
+    color: #495057 !important;
+}

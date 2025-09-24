@@ -58,8 +58,8 @@ class AccountInvoice(models.Model):
     is_affaire_id           = fields.Many2one('is.affaire', u'Affaire')
     is_activites            = fields.Many2many('is.activite', 'is_account_invoice_activite_rel', 'invoice_id', 'activite_id')
     is_detail_activite      = fields.Boolean(u'Afficher le détail des activités',default=True)
-    is_phase                = fields.Boolean(u'Afficher les phases',default=True)
-    is_intervenant          = fields.Boolean(u'Afficher les intervenants sur la facture')
+    is_phase                = fields.Boolean(u'Afficher les phases',default=False)
+    is_intervenant          = fields.Boolean(u'Afficher les intervenants sur la facture', default=True)
     is_prix_unitaire        = fields.Boolean(u'Afficher les quantités et prix unitaire sur la facture')
     is_frais                = fields.Monetary(u'Total des frais refacturables')
     is_detail_frais         = fields.Boolean(u'Afficher le détail des frais',default=False)
@@ -68,6 +68,28 @@ class AccountInvoice(models.Model):
     is_code_service         = fields.Char(u"Code service")
     is_ref_engagement       = fields.Char(u"Réf engagement")
     is_frais_commentaire    = fields.Char("Facturation des frais", compute='_is_frais_commentaire', readonly=True, store=False)
+
+
+    #** Surcharge de la fonction de base pour ne pas générer de séquence à l'état Diffusé
+    @api.depends('posted_before', 'state', 'journal_id', 'date', 'move_type', 'origin_payment_id')
+    def _compute_name(self):
+        self = self.sorted(lambda m: (m.date, m.ref or '', m._origin.id))
+
+        for move in self:
+            if move.state == 'cancel':
+                continue
+
+            move_has_name = move.name and move.name != '/'
+            if not move.posted_before and not move._sequence_matches_date():
+                # The name does not match the date and the move is not the first in the period:
+                # Reset to draft
+                move.name = False
+                continue
+            if move.date and not move_has_name and move.state != 'draft' and move.state != 'diffuse':
+                move._set_next_sequence()
+
+        self._inverse_name()
+
 
 
     def _is_frais_commentaire(self):

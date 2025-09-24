@@ -90,7 +90,7 @@
                         <field name="alerte" nolabel="1"/>
                     </div>
                     <notebook>
-                        <page string="Entête">
+                        <page string="Synthèse">
                             <group>
                                 <field name="code_long"/>
                                 <field name="nature_affaire"/>
@@ -246,7 +246,7 @@
                                         <field name="nb_facturable" optional="show"    sum="Total"/>
                                         <field name="total_facturable" optional="show" sum="Total"/>
                                         <field name="state" optional="show" readonly="1"/>
-                                        <field name="facture_sur_accompte" optional="hide"/>
+                                        <field name="facture_sur_accompte" optional="show"/>
                                         <field name="invoice_id" optional="show"/>
                                     </list>
                                 </field>

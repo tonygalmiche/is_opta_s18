@@ -3,13 +3,14 @@
     <data>
 
         <!-- account.payment --> 
-        <!-- <record id="is_view_account_payment_tree" model="ir.ui.view">
+        <record id="is_view_account_payment_tree" model="ir.ui.view">
             <field name="name">is_view_account_payment_tree</field>
             <field name="model">account.payment</field>
             <field name="inherit_id" ref="account.view_account_payment_tree"/>
             <field name="arch" type="xml">
                 <field name="name" position="after">
-                    <field name="communication"/>
+                    <!-- <field name="communication"/> -->
+                    <field name="memo"/>
                 </field>
             </field>
         </record>
@@ -19,11 +20,12 @@
             <field name="inherit_id" ref="account.view_account_payment_search"/>
             <field name="arch" type="xml">
                 <field name="partner_id" position="after">
-                    <field name="communication"/>
+                    <!-- <field name="communication"/> -->
+                    <field name="memo"/>
                 </field>
             </field>
         </record>
- -->
+
 
         <!-- account.fiscal.position --> 
         <record id="is_view_account_position_form" model="ir.ui.view">
