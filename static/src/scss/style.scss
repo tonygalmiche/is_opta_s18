@@ -3,6 +3,10 @@
     background-color: rgb(250,250,250);
 }
 
+/* Mais il faut annuler ce style pour les descendants de .o_field_monetary sinon le montant n'est plus visible */
+.o_field_monetary .o_input {
+    background-color: inherit !important;  /* ou la couleur souhaitée */
+}
 
 // Permet de mettre un fond gris plus foncé pour les champs obligoaires 
 .o_required_modifier .o_input  {
@@ -69,12 +73,18 @@
 // Pour les en-têtes de tableaux dans les vues one2many et many2many
 .o_form_view .o_field_one2many .o_list_table th,
 .o_form_view .o_field_many2many .o_list_table th {
-    background-color: #e8e4f3 !important;
+    //background-color: #e8e4f3 !important;
+    //background-color: #A5A599 !important; // Gris Opta-S
+    //background-color: #EF582C !important; // Orange Opta-S
+    background-color: #ffddd1 !important; // Orange clair Opta-S
 }
 
 // Onglet actif du notebook avec le même violet
 .o_form_view .o_notebook .nav-link.active {
-    background-color: #e8e4f3 !important;
+    //background-color: #e8e4f3 !important;
+    //background-color: #A5A599 !important; // Gris Opta-S
+    //background-color: #EF582C !important; // Orange Opta-S
+    background-color: #ffddd1 !important; // Orange clair Opta-S
     border-color: #e8e4f3 !important;
 }
 
@@ -82,4 +92,50 @@
 .o_notebook .nav-link {
     border-color: #dee2e6 !important;
     color: #495057 !important;
+    //color: #EF582C !important;
 }
+
+
+
+/* Pour changer la couleur de la barre de menus en haut */
+.o_main_navbar {    
+    background-color:#EF582C; // Orange Opta-S
+}
+.o_main_navbar .o_menu_sections .dropdown-toggle {
+    background-color:#EF582C; // Orange Opta-S
+}
+.o_main_navbar .o_menu_sections .o-dropdown-item {
+    background-color:#EF582C; // Orange Opta-S
+}
+
+// button .btn .primary {
+//     background-color:#EF582C !important; // Orange Opta-S
+// }
+
+
+
+// Boutons avec la couleur orange Opta-S
+.btn-primary {
+    background-color: #EF582C !important;
+    border-color: #EF582C !important;
+}
+
+// <button invisible="state not in ['brouillon']" class="btn btn-primary" name="vers_diffuse" type="object"><span>vers Diffusé</span></button>
+
+
+//   <button data-hotkey="1" 
+//         data-menu-xmlid="is_opta_s18.is_affaire_main_menu" 
+//         aria-expanded="false" 
+//         class="o-dropdown dropdown-toggle dropdown">
+//     <span data-section="183">Affaires</span>
+//     </button>
+    
+//     <a class="o-dropdown-item dropdown-item o-navigable o_nav_entry" 
+//        role="menuitem" 
+//        tabindex="0" 
+//        href="/odoo/action-318" 
+//        data-hotkey="2" 
+//        data-menu-xmlid="is_opta_s18.is_activite_menu" 
+//        data-section="190">
+//     Activités
+//     </a>

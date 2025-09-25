@@ -353,6 +353,44 @@
         </field>
     </record>
 
+
+
+    <record id="is_affaire_kanban" model="ir.ui.view">
+        <field name="name">is.centrale.kanban</field>
+        <field name="model">is.affaire</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_small_column">
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <strong>
+                                    <field name="nature_affaire"/>
+                                </strong>
+                            </div>
+                            <div>
+                                <field name="code_long"/>
+                            </div>
+                            <div>
+                                <field name="partner_id"/>
+                            </div>
+                            <div>
+                                <field name="type_offre_id"/>
+                            </div>
+                            <div>
+                                <field name="secteur_id"/>
+                            </div>
+                            <div>
+                                <field name="date_creation"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+
     
     <record id="is_affaire_tree" model="ir.ui.view">
         <field name="name">is.affaire.tree</field>
@@ -408,6 +446,11 @@
                 <field name="annee_creation"/>
                 <field name="state"/>
                 <field name="createur_id"/>
+                <group expand="1" string="Group By">
+                    <filter string="État"        name="group_state"          context="{'group_by':'state'}"/>
+                    <filter string="Responsable" name="group_responsable_id" context="{'group_by':'responsable_id'}"/>
+                    <filter string="Secteur"     name="group_secteur_id"     context="{'group_by':'secteur_id'}"/>
+                </group>
            </search>
         </field>
     </record>
@@ -415,7 +458,7 @@
         <field name="name">Affaires</field>
         <field name="res_model">is.affaire</field>
         <field name="limit">200</field>
-        <field name="view_mode">list,form,pivot</field>
+        <field name="view_mode">list,form,kanban,pivot</field>
     </record>
 
     <!-- is.type.intervention -->
