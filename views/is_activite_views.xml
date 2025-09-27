@@ -242,6 +242,9 @@
                 <field name="nb_facturable"          optional="show" sum="Total"/>
                 <field name="total_facturable"       optional="show" sum="Total"/>
                 <field name="jours_consommes"        optional="show" sum="Total"/>
+                <field name="non_facturable"         optional="hide"/>
+                <field name="facture_sur_accompte"   optional="hide"/>
+                <field name="invoice_id" optional="show" widget="many2one_clickable"/>
                 <field 
                     name="state" widget="badge" 
                     decoration-danger="state=='brouillon'" 
@@ -249,7 +252,6 @@
                     decoration-success="state=='valide'" 
                     optional="show"
                 />
-                <field name="invoice_id" optional="show" widget="many2one_clickable"/>
             </list>
         </field>
     </record>
