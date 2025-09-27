@@ -272,7 +272,7 @@ class AccountInvoice(models.Model):
     def _add_tr(self,line):
         for obj in self:
             html='<tr>'
-            html+='<td class="text-left">' +line.name+'</td>'
+            html+='<td class="text-left">' + (line.name or '')+'</td>'
             if obj.is_intervenant:
                 html+='<td class="text-left">'+(line.is_activite_id.intervenant_id.intervenant_id.name or '')+'</td>'
                 html+='<td class="text-left">'+(line.is_activite_id.dates_intervention or '')+'</td>'
