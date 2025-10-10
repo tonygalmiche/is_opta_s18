@@ -311,10 +311,12 @@
                                         <field name="name"/>
                                         <field name="is_createur_id"/>
                                         <field name="invoice_date_due"/>
-                                        <field name="amount_untaxed"      string="Total HT"   sum="Total"/>
-                                        <field name="amount_tax"          string="TVA"        sum="Total"/>
-                                        <field name="amount_total_signed" string="Total TTC"  sum="Total"/>
-                                        <field name="amount_residual_signed"     string="Restant du" sum="Total"/>
+                                        <field name="currency_id"         column_invisible="1"/>
+                                        <field name="company_currency_id" column_invisible="1"/>
+                                        <field name="amount_untaxed_signed"  string="Total HT"   sum="Total"/>
+                                        <field name="amount_tax_signed"      string="TVA"        sum="Total"/>
+                                        <field name="amount_total_signed"    string="Total TTC"  sum="Total"/>
+                                        <field name="amount_residual_signed" string="Restant du" sum="Total"/>
                                         <field name="state"/>
                                     </list>
                                 </field>

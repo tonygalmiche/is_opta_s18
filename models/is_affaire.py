@@ -406,7 +406,7 @@ class IsAffaire(models.Model):
             total_encaissement = 0
             reste_encaissement = 0
             for invoice in obj.facture_ids:
-                total_facture_ht   += invoice.amount_untaxed
+                total_facture_ht   += invoice.amount_untaxed_signed
                 total_facture_ttc  += invoice.amount_total_signed
                 total_encaissement += invoice.amount_total_signed-invoice.amount_residual_signed
                 reste_encaissement += invoice.amount_residual_signed
