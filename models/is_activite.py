@@ -251,6 +251,12 @@ class IsActivite(models.Model):
 
     def vers_diffuse(self):
         for obj in self:
+            # Vérification des droits si l'état actuel est "valide"
+            if obj.state == 'valide':
+                user = self.env['res.users'].browse(self._uid)
+                if not user.has_group('is_opta_s18.is_administratif_group'):
+                    raise ValidationError("Vous n'avez pas les droits pour passer une activité validée à l'état diffusé")
+            
             subject=u'[Activité] '+obj.nature_activite+u' Diffusé'
             email_to=obj.affaire_id.responsable_id.email
             if not email_to:
