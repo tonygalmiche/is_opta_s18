@@ -209,8 +209,8 @@
                             <group>
                                 <field name="activite_phase_ids" nolabel="1" >
                                     <list editable="bottom">
-                                        <button title="Activités de cette phase" name="acceder_activites_action" type="object" icon="fa-list"/>
-                                        <button title="Nouvelle activité"        name="creation_activite_action" type="object" icon="fa-plus"/>
+                                        <button title="Activités de cette phase" name="acceder_activites_action" type="object" icon="fa-list" width="32"/>
+                                        <button title="Nouvelle activité"        name="creation_activite_action" type="object" icon="fa-plus" width="32"/>
                                         <field name="affaire_phase_id" domain="[('affaire_id','=',parent.id)]"/>
                                         <field name="name"/>
                                         <field name="jours_prevus"    sum="Total"/>
@@ -234,9 +234,9 @@
                                     limit="200"
                                 >
                                     <list default_order="date_debut desc">
-                                        <button title="Activité" name="acceder_activite_action" type="object" icon="fa-search-plus"/>
+                                        <button title="Activité" name="acceder_activite_action" type="object" icon="fa-search-plus" width="32"/>
                                         <field name="partner_id" optional="show"/>
-                                        <field name="phase_activite_id" optional="show" class="col-phase-activite"/>
+                                        <field name="phase_activite_id" optional="show"/> 
                                         <field name="nature_activite" optional="show"/>
                                         <field name="date_debut" optional="show"/>
                                         <field name="dates_intervention" optional="show"/>
@@ -260,7 +260,7 @@
                             <group>
                                 <field name="frais_ids" nolabel="1" readonly="1">
                                     <list>
-                                        <button title="Frais" name="acceder_frais_action" type="object" icon="fa-search-plus"/>
+                                        <button title="Frais" name="acceder_frais_action" type="object" icon="fa-search-plus" width="32"/>
                                         <field name="chrono_long" optional="show"/>
                                         <field name="date_creation" optional="show"/>
                                         <field name="createur_id" optional="show"/>
@@ -284,20 +284,20 @@
                             <group>
                                 <field name="suivi_temps_ids" nolabel="1" readonly="1">
                                     <list>
-                                        <button string="Suivi du temps" name="acceder_suivi_temps_action" type="object" icon="fa-search-plus"/>
+                                        <button title="Suivi du temps" name="acceder_suivi_temps_action" type="object" icon="fa-search-plus" width="32"/>
                                         <field name="activite_id"/>
-                                        <field name="type_activite"/>
-                                        <field name="date_activite"/>
-                                        <field name="nb_stagiaires"                            sum="Total"/>
-                                        <field name="nb_heures"            widget="float_time" sum="Total"/>
-                                        <field name="realise_st"/>
-                                        <field name="a_distance"/>
-                                        <field name="aller_heure_depart"   widget="float_time"/>
-                                        <field name="aller_heure_arrivee"  widget="float_time"/>
-                                        <field name="retour_heure_depart"  widget="float_time"/>
-                                        <field name="retour_heure_arrivee" widget="float_time"/>
-                                        <field name="temps_deplacement"    widget="float_time" sum="Total"/>
-                                        <field name="detail_activite"/>
+                                        <field name="type_activite" optional="show" />
+                                        <field name="date_activite" optional="show" />
+                                        <field name="nb_stagiaires" optional="show"                             sum="Total"/>
+                                        <field name="nb_heures"     optional="show"         widget="float_time" sum="Total"/>
+                                        <field name="realise_st"           optional="show" />
+                                        <field name="a_distance"           optional="show" />
+                                        <field name="aller_heure_depart"   optional="show"   widget="float_time"/>
+                                        <field name="aller_heure_arrivee"  optional="show"   widget="float_time"/>
+                                        <field name="retour_heure_depart"  optional="show"  widget="float_time"/>
+                                        <field name="retour_heure_arrivee" optional="show"  widget="float_time"/>
+                                        <field name="temps_deplacement"    optional="show"  widget="float_time" sum="Total"/>
+                                        <field name="detail_activite"      optional="show" />
                                     </list>
                                 </field>
                             </group>
@@ -306,7 +306,7 @@
                             <group>
                                 <field name="facture_ids" nolabel="1" readonly="1">
                                     <list>
-                                        <button title="Facture" name="acceder_facture_action" type="object" icon="fa-search-plus"/>
+                                        <button title="Facture" name="acceder_facture_action" type="object" icon="fa-search-plus" width="32"/>
                                         <field name="invoice_date"/>
                                         <field name="name"/>
                                         <field name="is_createur_id"/>
@@ -332,7 +332,7 @@
                             <group>
                                 <field name="facture_st_ids" nolabel="1" readonly="1">
                                     <list>
-                                        <button string="Facture ST" name="acceder_facture_st_action" type="object" icon="fa-search-plus"/>
+                                        <button string="Facture ST" name="acceder_facture_st_action" type="object" icon="fa-search-plus" width="32"/>
                                         <field name="name"/>
                                         <field name="sous_traitant_id"/>
                                         <field name="date_facture"/>

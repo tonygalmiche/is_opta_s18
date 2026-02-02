@@ -55,19 +55,19 @@
 
 
 // Permet de forcer la largeur des colonnes phase_activite_id et nature_activite sur is_affaire_form
-.form_is_affaire{
-    th[data-name="phase_activite_id"] {
-        width: 200px !important;
-    }
-}
-.form_is_affaire{
-    th[data-name="nature_activite"] {
-        width: 400px !important;
-    }
-}
-.form_is_affaire th:not([data-name="phase_activite_id"]):not([data-name="nature_activite"])  {
-    width: auto !important;
-}
+// .form_is_affaire{
+//     th[data-name="phase_activite_id"] {
+//         width: 200px !important;
+//     }
+// }
+// .form_is_affaire{
+//     th[data-name="nature_activite"] {
+//         width: 400px !important;
+//     }
+// }
+// .form_is_affaire th:not([data-name="phase_activite_id"]):not([data-name="nature_activite"])  {
+//     width: auto !important;
+// }
 
 
 // Pour les en-têtes de tableaux dans les vues one2many et many2many
