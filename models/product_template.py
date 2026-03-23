@@ -12,4 +12,5 @@ class ProductTemplate(models.Model):
         ], "Type d'intervenant",)
     is_consultant_id = fields.Many2one('res.users', "Utilisateur associé")
     is_code_analytique = fields.Char("Code analytique")
+    is_type_frais = fields.Boolean("Type de dépense", default=False)
 
