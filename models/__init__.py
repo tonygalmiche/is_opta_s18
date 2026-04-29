@@ -18,3 +18,4 @@ from . import is_suivi_production_affaire
 from . import is_frais_lignes_view
 from . import is_affaire_vendue_par_view
 from . import ir_attachment
+from . import is_dispo_user_mois

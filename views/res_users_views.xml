@@ -17,6 +17,7 @@
                     <field name="is_nb_jours"/>
                     <field name="is_salaire_an"/>
                     <field name="is_salaire_jour"/>
+                    <field name="is_taux_disponibilite"/>
                 </group>
             </group>
         </field>
@@ -33,4 +34,39 @@
             </field>
         </field>
     </record>
+
+    <!-- Vue liste ACR taux de disponibilité -->
+    <record model="ir.ui.view" id="is_users_taux_dispo_tree">
+        <field name="name">is_users_taux_dispo_tree</field>
+        <field name="model">res.users</field>
+        <field name="priority">999</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="is_can_edit_taux" column_invisible="1"/>
+                <field name="name"                  readonly="1"/>
+                <field name="is_taux_disponibilite" readonly="not is_can_edit_taux"/>
+            </list>
+        </field>
+    </record>
+    <record model="ir.ui.view" id="is_users_taux_dispo_search">
+        <field name="name">is_users_taux_dispo_search</field>
+        <field name="model">res.users</field>
+        <field name="priority">999</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <filter string="Mon taux de disponibilité" name="mon_taux" domain="[('id','=',uid)]"/>
+            </search>
+        </field>
+    </record>
+    <record id="is_users_taux_dispo_action" model="ir.actions.act_window">
+        <field name="name">Taux de disponibilité par utilisateur</field>
+        <field name="res_model">res.users</field>
+        <field name="limit">200</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="is_users_taux_dispo_tree"/>
+        <field name="search_view_id" ref="is_users_taux_dispo_search"/>
+        <field name="context">{'search_default_mon_taux': 1}</field>
+    </record>
+
 </odoo>

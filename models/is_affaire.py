@@ -436,6 +436,8 @@ class IsAffaire(models.Model):
     jours_prevus         = fields.Float("Nb jours prévus"   , digits=(14,2), tracking=True, readonly=False) # states={'offre_en_cours': [('readonly', False)]})
     jours_consommes      = fields.Float("Nb jours consommés", digits=(14,2), compute='_compute_realise', readonly=True, store=False,help="Jours facturables des activités")
     jours_realises       = fields.Float("Nb jours réalisés" , digits=(14,2), compute='_compute_realise', readonly=True, store=False,help="Jours réalisés des activités")
+    jours_restant_facturer = fields.Float("Jours restant à facturer", digits=(14,2), tracking=True, help="Pour suivi ACR")
+    remarque_suivi_acr     = fields.Char("Remarque suivi ACR", tracking=True)
     fiscal_position_id   = fields.Many2one('account.fiscal.position', "Position fiscale",
                                 readonly=False, tracking=True) # states={'offre_en_cours': [('readonly', False)]})
     proposition_ids      = fields.Many2many('ir.attachment', 'is_affaire_propositions_rel', 'doc_id', 'file_id', 'Propositions commerciales')

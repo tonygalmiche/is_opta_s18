@@ -42,6 +42,8 @@ InfoSaône - Module Odoo 18 pour Opta-S / SGP
         'views/is_invoice_activite_views.xml',
         'views/is_facture_st_views.xml',
         'views/is_suivi_production_affaire.xml',
+        'views/is_dispo_user_mois_views.xml',
+        'views/is_analyse_acr_views.xml',
         'views/menu.xml',
         'report/report_templates.xml',
         'report/report_invoice.xml',

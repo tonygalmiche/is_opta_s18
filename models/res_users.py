@@ -28,9 +28,17 @@ class ResUsers(models.Model):
     is_compte_general     = fields.Char('Compte général')
     is_google_agenda_ical = fields.Text('Adresse privée iCal Google Agenda')
     is_dynacase_ids       = fields.Many2many('is.dynacase', 'res_users_dynacase_rel', 'doc_id', 'dynacase_id', 'Ids Dynacase', readonly=True)
-    is_nb_jours           = fields.Integer('Nombre de jours travaillables par an')
-    is_salaire_an         = fields.Integer('Salaire brut chargé par an')
-    is_salaire_jour       = fields.Float('Salaire journalier', digits=(14,2), compute='_compute_is_salaire_jour', readonly=True, store=True)
+    is_nb_jours             = fields.Integer('Nombre de jours travaillables par an')
+    is_salaire_an           = fields.Integer('Salaire brut chargé par an')
+    is_salaire_jour         = fields.Float('Salaire journalier', digits=(14,2), compute='_compute_is_salaire_jour', readonly=True, store=True)
+    is_taux_disponibilite   = fields.Integer('Taux de disponibilité', help="Pour suivi ACR")
+    is_can_edit_taux        = fields.Boolean('Peut modifier le taux', compute='_compute_can_edit_taux', store=False)
+
+    @api.depends_context('uid')
+    def _compute_can_edit_taux(self):
+        is_erp_manager = self.env.user.has_group('base.group_erp_manager')
+        for obj in self:
+            obj.is_can_edit_taux = (obj.id == self.env.uid) or is_erp_manager
 
 
     # @api.model

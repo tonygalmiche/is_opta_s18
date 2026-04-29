@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Vue liste saisie 12 mois (filtrée sur le user connecté) -->
+    <record id="is_dispo_user_mois_saisie_tree" model="ir.ui.view">
+        <field name="name">is.dispo.user.mois.saisie.tree</field>
+        <field name="model">is.dispo.user.mois</field>
+        <field name="priority">16</field>
+        <field name="arch" type="xml">
+            <list editable="bottom" default_order="mois">
+                <field name="user_id" readonly="1"/>
+                <field name="mois" readonly="1"/>
+                <field name="disponibilite"/>
+                <field name="charge"/>
+                <field name="delta" readonly="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vue liste globale toutes disponibilités -->
+    <record id="is_dispo_user_mois_all_tree" model="ir.ui.view">
+        <field name="name">is.dispo.user.mois.all.tree</field>
+        <field name="model">is.dispo.user.mois</field>
+        <field name="priority">999</field>
+        <field name="arch" type="xml">
+            <list default_order="mois, user_id">
+                <field name="user_id"/>
+                <field name="mois"/>
+                <field name="disponibilite"/>
+                <field name="charge"/>
+                <field name="delta" readonly="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vue graphique -->
+    <record id="is_dispo_user_mois_graph" model="ir.ui.view">
+        <field name="name">is.dispo.user.mois.graph</field>
+        <field name="model">is.dispo.user.mois</field>
+        <field name="arch" type="xml">
+            <graph type="bar" stacked="True">
+                <field name="mois"    type="row"/>
+                <field name="user_id" type="col"/>
+                <field name="delta"   type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Vue recherche globale -->
+    <record id="is_dispo_user_mois_search" model="ir.ui.view">
+        <field name="name">is.dispo.user.mois.search</field>
+        <field name="model">is.dispo.user.mois</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="user_id"/>
+                <field name="mois"/>
+                <filter string="Mes disponibilités" name="mes_dispos" domain="[('user_id','=',uid)]"/>
+                <group expand="1" string="Regrouper par">
+                    <filter string="Utilisateur" name="group_user_id" context="{'group_by':'user_id'}"/>
+                    <filter string="Mois"        name="group_mois"    context="{'group_by':'mois'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action saisie 12 mois : déclenche la méthode Python -->
+    <record id="is_dispo_user_mois_saisie_action" model="ir.actions.server">
+        <field name="name">Saisie des disponibilités sur 12 mois</field>
+        <field name="model_id" ref="model_is_dispo_user_mois"/>
+        <field name="binding_model_id" ref="model_is_dispo_user_mois"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_saisie_12_mois()</field>
+    </record>
+
+    <!-- Action liste globale -->
+    <record id="is_dispo_user_mois_all_action" model="ir.actions.act_window">
+        <field name="name">Disponibilités par utilisateur et par mois</field>
+        <field name="res_model">is.dispo.user.mois</field>
+        <field name="limit">200</field>
+        <field name="view_mode">graph,list</field>
+        <field name="view_id"/>
+        <field name="search_view_id"/>
+    </record>
+
+</odoo>

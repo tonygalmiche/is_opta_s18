@@ -14,6 +14,7 @@
 
 
 
+    <!-- Affaires -->
     <menuitem
         id="is_affaire_main_menu"
         name="Affaires"
@@ -27,15 +28,75 @@
         sequence="10"
         action="is_affaire_action"
     />
-
-
-    
     <menuitem
         id="is_affaire_vendue_par_view_menu"
         name="CA vendu par consultant"
         parent="is_affaire_main_menu"
         sequence="20"
     />
+
+
+
+    <!-- ACR -->
+    <menuitem
+        id="is_affaire_acr_main_menu"
+        name="ACR"
+        parent="is_crm_main_menu"
+        sequence="11"
+    />
+    <menuitem
+        id="is_affaire_acr_menu"
+        name="ACR"
+        parent="is_affaire_acr_main_menu"
+        sequence="10"
+        action="is_affaire_acr_action"
+    />
+    <menuitem
+        id="is_users_taux_dispo_menu"
+        name="Taux de disponibilité par utilisateur"
+        parent="is_affaire_acr_main_menu"
+        sequence="20"
+        action="is_users_taux_dispo_action"
+    />
+    <menuitem
+        id="is_dispo_user_mois_saisie_menu"
+        name="Saisie des disponibilités sur 12 mois"
+        parent="is_affaire_acr_main_menu"
+        sequence="30"
+        action="is_dispo_user_mois_saisie_action"
+    />
+    <menuitem
+        id="is_dispo_user_mois_all_menu"
+        name="Disponibilités par utilisateur et par mois"
+        parent="is_affaire_acr_main_menu"
+        sequence="40"
+        action="is_dispo_user_mois_all_action"
+    />
+    <menuitem
+        id="is_analyse_acr_menu"
+        name="Analyse ACR disponibilité"
+        parent="is_affaire_acr_main_menu"
+        sequence="50"
+        action="is_analyse_acr_action"
+    />
+    <menuitem
+        id="is_analyse_acr_charge_menu"
+        name="Analyse ACR charge"
+        parent="is_affaire_acr_main_menu"
+        sequence="60"
+        action="is_analyse_acr_charge_action"
+    />
+    <menuitem
+        id="is_analyse_acr_delta_menu"
+        name="Analyse ACR reste dispo"
+        parent="is_affaire_acr_main_menu"
+        sequence="70"
+        action="is_analyse_acr_delta_action"
+    />
+
+
+
+
     <menuitem
         id="is_affaire_vendue_par_view_affaire_id_menu"
         name="CA vendu par consultant et par affaire"

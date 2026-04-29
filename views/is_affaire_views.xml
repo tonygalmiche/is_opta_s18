@@ -113,6 +113,8 @@
                                     <field name="jours_prevus"/>
                                     <field name="jours_realises"/>
                                     <field name="jours_consommes"/>
+                                    <field name="jours_restant_facturer"/>
+                                    <field name="remarque_suivi_acr"/>
                                 </group>
                             </group>
                             <group>
@@ -458,6 +460,7 @@
                 <field name="annee_creation"/>
                 <field name="state"/>
                 <field name="createur_id"/>
+                <filter string="Mes affaires" name="mes_affaires" domain="[('responsable_id','=',uid)]"/>
                 <group expand="1" string="Group By">
                     <filter string="État"        name="group_state"          context="{'group_by':'state'}"/>
                     <filter string="Responsable" name="group_responsable_id" context="{'group_by':'responsable_id'}"/>
@@ -471,6 +474,34 @@
         <field name="res_model">is.affaire</field>
         <field name="limit">200</field>
         <field name="view_mode">list,form,kanban,pivot,graph</field>
+    </record>
+
+    <!-- Vue liste ACR -->
+    <record id="is_affaire_acr_tree" model="ir.ui.view">
+        <field name="name">is.affaire.acr.tree</field>
+        <field name="model">is.affaire</field>
+        <field name="priority">999</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="code_long"        readonly="1"/>
+                <field name="nature_affaire"   readonly="1" class="min30rem"/>
+                <field name="partner_id"       readonly="1" widget="many2one_clickable"/>
+                <field name="secteur_id"       readonly="1" optional="show"/>
+                <field name="date_creation"    readonly="1" optional="show"/>
+                <field name="responsable_id"   readonly="1" optional="show" widget="many2one_avatar_user"/>
+                <field name="jours_restant_facturer"/>
+                <field name="remarque_suivi_acr"/>
+            </list>
+        </field>
+    </record>
+    <record id="is_affaire_acr_action" model="ir.actions.act_window">
+        <field name="name">ACR</field>
+        <field name="res_model">is.affaire</field>
+        <field name="limit">200</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="is_affaire_acr_tree"/>
+        <field name="domain">[('state', '=', 'affaire_gagnee')]</field>
+        <field name="context">{'search_default_mes_affaires': 1}</field>
     </record>
 
     <!-- is.type.intervention -->
