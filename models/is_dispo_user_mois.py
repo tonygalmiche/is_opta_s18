@@ -11,14 +11,28 @@ class IsDispoUserMois(models.Model):
 
     user_id       = fields.Many2one('res.users', 'Utilisateur', required=True, index=True, ondelete='cascade')
     mois          = fields.Char('Mois', required=True, help="Format AAAA-MM")
-    disponibilite = fields.Integer('Disponibilité', help="Nombre de jours disponibles")
-    charge        = fields.Integer('Charge')
-    delta         = fields.Integer('Delta', compute='_compute_delta', store=True)
+    disponibilite             = fields.Integer('Disponibilité', help="Nombre de jours disponibles")
+    taux_disponibilite        = fields.Integer('Taux de disponibilité', related='user_id.is_taux_disponibilite', store=True)
+    disponibilite_avec_taux   = fields.Integer('Disponibilité avec taux', compute='_compute_disponibilite_avec_taux', store=True, help="Disponibilité × taux / 100")
+    charge                    = fields.Integer('Charge Facturable (CF)')
+    charge_nf                 = fields.Integer('Charge Non Facturable (CNF)')
+    conges                    = fields.Integer('Congés (CO)')
+    delta                     = fields.Integer('Reste Dispo', compute='_compute_delta', store=True, help="Disponibilité avec taux - CF - CO - CNF")
 
-    @api.depends('disponibilite', 'charge')
+
+
+
+
+
+    @api.depends('disponibilite', 'taux_disponibilite')
+    def _compute_disponibilite_avec_taux(self):
+        for obj in self:
+            obj.disponibilite_avec_taux = int(obj.disponibilite * obj.taux_disponibilite / 100)
+
+    @api.depends('disponibilite_avec_taux', 'charge', 'conges', 'charge_nf')
     def _compute_delta(self):
         for obj in self:
-            obj.delta = obj.disponibilite - obj.charge
+            obj.delta = obj.disponibilite_avec_taux - obj.charge - obj.conges - obj.charge_nf
 
     _sql_constraints = [
         ('unique_user_mois', 'unique(user_id, mois)', "Une ligne existe déjà pour cet utilisateur et ce mois."),
@@ -95,8 +109,10 @@ class IsAnalyseAcr(models.Model):
 
         labels = {
             'disponibilite': 'Disponibilité',
-            'charge'       : 'Charge',
-            'delta'        : 'Delta',
+            'charge'       : 'Charge Facturable (CF)',
+            'charge_nf'    : 'Charge Non Facturable (CNF)',
+            'conges'       : 'Congés (CO)',
+            'delta'        : 'Reste Dispo',
         }
         titres = {
             'disponibilite': 'Analyse ACR disponibilité',

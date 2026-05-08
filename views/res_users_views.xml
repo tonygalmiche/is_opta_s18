@@ -68,5 +68,17 @@
         <field name="search_view_id" ref="is_users_taux_dispo_search"/>
         <field name="context">{'search_default_mon_taux': 1}</field>
     </record>
+    <record model="ir.ui.view" id="is_view_users_simple_form">
+        <field name="name">is_view_users_simple_form</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_simple_form"/>
+        <field name="arch" type="xml">
+            <group name="phone_numbers" position="after">
+                <group string="Consultant">
+                    <field name="is_taux_disponibilite"/>
+                </group>
+            </group>
+        </field>
+    </record>
 
 </odoo>

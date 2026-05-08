@@ -11,7 +11,11 @@
                 <field name="user_id" readonly="1"/>
                 <field name="mois" readonly="1"/>
                 <field name="disponibilite"/>
+                <field name="taux_disponibilite" readonly="1"/>
+                <field name="disponibilite_avec_taux" readonly="1"/>
                 <field name="charge"/>
+                <field name="charge_nf"/>
+                <field name="conges"/>
                 <field name="delta" readonly="1"/>
             </list>
         </field>
@@ -27,7 +31,11 @@
                 <field name="user_id"/>
                 <field name="mois"/>
                 <field name="disponibilite"/>
+                <field name="taux_disponibilite" readonly="1"/>
+                <field name="disponibilite_avec_taux" readonly="1"/>
                 <field name="charge"/>
+                <field name="charge_nf"/>
+                <field name="conges"/>
                 <field name="delta" readonly="1"/>
             </list>
         </field>
