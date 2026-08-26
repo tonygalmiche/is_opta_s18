@@ -114,6 +114,27 @@ class AccountInvoice(models.Model):
         return res
 
 
+    #** Le champ 'ref' (Référence client) sert au numéro d'engagement exigé
+    #** par Chorus Pro pour certains clients publics (cf. fr_directory_line
+    #** commitment_required), mais n'est pas utilisé par ailleurs sur
+    #** opta-s18 : on le synchronise automatiquement avec 'is_ref_engagement'.
+    @api.onchange('is_ref_engagement')
+    def _onchange_is_ref_engagement(self):
+        self.ref = self.is_ref_engagement
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('is_ref_engagement') and not vals.get('ref'):
+                vals['ref'] = vals['is_ref_engagement']
+        return super().create(vals_list)
+
+    def write(self, vals):
+        if vals.get('is_ref_engagement'):
+            vals['ref'] = vals['is_ref_engagement']
+        return super().write(vals)
+
+
     def acceder_facture_action(self):
         for obj in self:
 
@@ -168,6 +189,50 @@ class AccountInvoice(models.Model):
             """
             #self.envoi_mail(email_from,email_to,subject,body_html)
             obj.state='diffuse'
+
+
+    def _en16931_checks_upon_invoice_generation(self):
+        #** Surcharge de account_invoice_en16931 pour autoriser la génération
+        #** EN16931 (bouton "Tester si la facture est valide") à l'état
+        #** personnalisé 'diffuse', en plus de 'draft' et 'posted' (le code
+        #** d'origine ne connaît pas cet état ajouté par is_opta_s18).
+        self.ensure_one()
+        if self.state != 'diffuse':
+            return super()._en16931_checks_upon_invoice_generation()
+        self.company_id._en16931_checks()
+        if self.move_type not in ("out_invoice", "out_refund"):
+            raise UserError(u"La génération EN16931 n'est utilisée que pour les factures et avoirs clients. Ce n'est pas le cas de '"+self.display_name+u"'.")
+
+
+    #** Ces 3 méthodes surchargent account_invoice_en16931 : le code d'origine
+    #** ne connaît pas l'état personnalisé 'diffuse' (ajouté par is_opta_s18),
+    #** qui doit être traité comme 'draft' (facture pas encore numérotée).
+
+    def _prepare_bt1(self, speedy):
+        self.ensure_one()
+        if self.state == 'diffuse':
+            return self.env._("DRAFT-FOR_TEST_ONLY")
+        return super()._prepare_bt1(speedy)
+
+    def _prepare_bt2(self, speedy):
+        self.ensure_one()
+        if self.state == 'diffuse':
+            return self.invoice_date or fields.Date.context_today(self)
+        return super()._prepare_bt2(speedy)
+
+    def _prepare_en16931_filename(self, invoice_format):
+        self.ensure_one()
+        if self.state != 'diffuse':
+            return super()._prepare_en16931_filename(invoice_format)
+        filename = self.env._("draft_invoice")
+        if invoice_format:
+            if invoice_format.startswith(("facturx", "pdf_")):
+                filename += ".pdf"
+            elif invoice_format.startswith("ubl"):
+                filename += "_ubl.xml"
+            elif invoice_format.startswith("cii"):
+                filename += "_cii.xml"
+        return filename
 
 
     def vers_brouillon_action(self):

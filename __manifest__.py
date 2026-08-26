@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name'     : 'InfoSaône - Module Odoo 18 pour Opta-S / SGP',
-    'version'  : '0.1',
+    'version'  : '18.0.0.4',
     'author'   : 'InfoSaône',
     'category' : 'InfoSaône',
     'description': """
@@ -19,6 +19,7 @@ InfoSaône - Module Odoo 18 pour Opta-S / SGP
         'web',
         'web_chatter_position',
         'crm',
+        'l10n_fr_einvoicing',
     ],
     'data' : [
         'security/res.groups.xml',
@@ -35,6 +36,7 @@ InfoSaône - Module Odoo 18 pour Opta-S / SGP
         'views/is_frais_views.xml',
         'views/is_frais_lignes_view_views.xml',
         'views/account_invoice_view.xml',
+        'views/l10n_fr_einvoicing_views.xml',
         'views/is_activite_suivi_temps_views.xml',
         'views/is_export_compta_view.xml',
         'views/is_export_compta_ana_view.xml',
