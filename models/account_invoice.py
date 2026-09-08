@@ -68,6 +68,16 @@ class AccountInvoice(models.Model):
     is_code_service         = fields.Char(u"Code service")
     is_ref_engagement       = fields.Char(u"Réf engagement")
     is_frais_commentaire    = fields.Char("Facturation des frais", compute='_is_frais_commentaire', readonly=True, store=False)
+    is_autoriser_retour_brouillon = fields.Boolean(
+        "Autoriser le retour en brouillon",
+        default=False,
+        tracking=True,
+        copy=False,
+        help="Permet de repasser cette facture en brouillon même si le "
+             "module de facturation électronique (l10n_fr_einvoicing) s'y "
+             "oppose (facture déjà envoyée au client hors plateforme AP "
+             "alors qu'elle y est soumise, ou flux e-invoicing déjà généré).",
+    )
 
 
     #** Surcharge de la fonction de base pour ne pas générer de séquence à l'état Diffusé
@@ -234,6 +244,19 @@ class AccountInvoice(models.Model):
                 filename += "_cii.xml"
         return filename
 
+
+    #** Surcharge pour permettre le retour en brouillon d'une facture postée
+    #** malgré le blocage de l10n_fr_einvoicing (cf. is_autoriser_retour_brouillon),
+    #** via le context sudo_draftable_fr_einvoicing_flow déjà prévu par ce module.
+    def button_draft(self):
+        forced = self.filtered('is_autoriser_retour_brouillon')
+        if forced:
+            super(AccountInvoice, forced.with_context(sudo_draftable_fr_einvoicing_flow=True)).button_draft()
+            remaining = self - forced
+            if remaining:
+                super(AccountInvoice, remaining).button_draft()
+            return True
+        return super().button_draft()
 
     def vers_brouillon_action(self):
         for obj in self:

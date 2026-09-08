@@ -173,6 +173,17 @@
                     </group>
                 </notebook>
 
+
+            </field>
+        </record>
+        <record id="is_invoice_form_einvoicing" model="ir.ui.view">
+            <field name="name">is_invoice_form_einvoicing</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="l10n_fr_einvoicing.view_move_form" />
+            <field name="arch" type="xml">
+                <field name="fr_einvoicing_flow_submitted_at" position="after">
+                    <field name="is_autoriser_retour_brouillon"/>
+                </field>
             </field>
         </record>
         <record id="is_invoice_tree" model="ir.ui.view">
