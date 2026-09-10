@@ -455,7 +455,13 @@ class AccountInvoice(models.Model):
             res=Markup(html)
             return res
 
-
+    def _get_invoice_proforma_pdf_report_filename(self):
+        # Ne pas suffixer le PDF de secours par "_proforma" : la facture
+        # n'est jamais réellement envoyée via "Imprimer & Envoyer" ici,
+        # donc invoice_pdf_report_id ne sera jamais créé et ce nom
+        # resterait indéfiniment marqué "proforma".
+        self.ensure_one()
+        return f"{self._get_move_display_name().replace(' ', '_').replace('/', '_')}.pdf"
 
 
 
